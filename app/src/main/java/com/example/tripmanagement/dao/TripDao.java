@@ -1,5 +1,6 @@
 package com.example.tripmanagement.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -34,6 +35,20 @@ public class TripDao {
         cs.close();
         database.close();
         return listOfTrips;
+    }
+
+    // insert a strip
+    public static boolean insert(Context context, String name, String destination, String date, String riskAssessment, String description){
+        DatabaseHelper helper = new DatabaseHelper(context);
+        SQLiteDatabase database = helper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("destination", destination);
+        values.put("date", date);
+        values.put("risk_assessment", riskAssessment);
+        values.put("description", description);
+        long newRow = database.insert("trips", null, values);
+        return (newRow >0);
     }
 
 }
