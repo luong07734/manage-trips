@@ -29,6 +29,7 @@ public class TripDao {
 
             Trip trip = new Trip(tripId, tripName, destination, date, riskAssessment, description);
             listOfTrips.add(trip);
+            cs.moveToNext();
         }
         cs.close();
         database.close();

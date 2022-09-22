@@ -25,6 +25,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(sql);
         }
 
+        String sql1 = "Insert into trips values (null, 'Da Nang Trip', 'Ba Na Hill, Da Nang', '01/01/2022', 'Yes', 'Fantastic, wonderful, significant, magnificent, outstanding, ...')";
+        sqLiteDatabase.execSQL(sql1);
+        sql1 = "Insert into trips values (null, 'Da Nang Trip', 'Ba Na Hill, Da Nang', '01/01/2022', 'Yes', 'Fantastic, wonderful, significant, magnificent, outstanding, ...')";
+        sqLiteDatabase.execSQL(sql1);
+        sql1 = "Insert into trips values (null, 'Da Nang Trip', 'Ba Na Hill, Da Nang', '01/01/2022', 'Yes', 'Fantastic, wonderful, significant, magnificent, outstanding, ...')";
+        sqLiteDatabase.execSQL(sql1);
+
     }
 
     // invoke when version changed
