@@ -20,7 +20,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 
 import android.app.DatePickerDialog;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         rvTrip.setLayoutManager(linearLayoutManager);
 
         // add button onclick
-        btnAdd.setOnClickListener(new View.OnClickListener(){
+        btnAdd.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showAddDialog(){
+    private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_trip, null);
@@ -75,7 +79,14 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         // calendar settings
 
+        TextInputEditText tietName = view.findViewById(R.id.trip_name_tiet);
+        TextInputEditText tietDestination = view.findViewById(R.id.trip_destination_tiet);
+        TextInputEditText tietDescription = view.findViewById(R.id.trip_description_tiet);
         TextInputEditText tietDate = view.findViewById(R.id.trip_date_tiet);
+        RadioButton rbYes = view.findViewById(R.id.radio_button_yes);
+        RadioButton rbNo = view.findViewById(R.id.radio_button_no);
+        Button btnCancel = view.findViewById(R.id.cancel_btn);
+        Button btnAdd = view.findViewById(R.id.add_trip_btn);
 
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -88,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 updateCalenderOnTextField();
             }
 
-            private void updateCalenderOnTextField(){
-                String format ="dd/MM/yyyy";
+            private void updateCalenderOnTextField() {
+                String format = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
                 tietDate.setText(sdf.format(calendar.getTime()));
             }
@@ -97,14 +108,100 @@ public class MainActivity extends AppCompatActivity {
 
 
         // date textfield onclick
-        tietDate.setOnClickListener(new View.OnClickListener(){
+        tietDate.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(MainActivity.this, date, calendar.get(Calendar.YEAR),  calendar.get(Calendar.MONTH),
+                new DatePickerDialog(MainActivity.this, date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        // cancel onclick
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                String name = tietName.getText().toString();
+                String destination = tietDestination.getText().toString();
+                String date = tietDate.getText().toString();
+                String description = tietDescription.getText().toString();
+                String riskAssessment = "Yes";
+                if (rbNo.isChecked()) {
+                    riskAssessment = "No";
+                }
+
+                if (allRequiredFieldsFilled(name, destination, date)) {
+                    showConfirmationDialog(name, destination, date, riskAssessment, description);
+                }
+                else{
+                    // TODO
+                }
+
+
+            }
+        });
+
+    }
+
+    private void showConfirmationDialog(String name, String destination, String date, String riskAssessment, String description) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_add_trip_confirm, null);
+        builder.setView(view);
+        Dialog secondDialog = builder.create();
+        secondDialog.show();
+
+        Button btnCancel = view.findViewById(R.id.btn_cancel_confirm);
+        Button btnOk = view.findViewById(R.id.btn_ok_confirm);
+        TextView tvName = view.findViewById(R.id.tv_confirm_name);
+        TextView tvDestination = view.findViewById(R.id.tv_confirm_destination);
+        TextView tvDate = view.findViewById(R.id.tv_confirm_date);
+        TextView tvDescription = view.findViewById(R.id.tv_confirm_description);
+        TextView tvRiskAssessment = view.findViewById(R.id.tv_confirm_risk_assessment);
+
+        tvName.setText(name);
+        tvDestination.setText(destination);
+        tvDate.setText(date);
+        tvRiskAssessment.setText(riskAssessment);
+        tvDescription.setText(description);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                secondDialog.cancel();
+            }
+        });
+
+        btnOk.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                if(TripDao.insert(MainActivity.this, name, destination, date, riskAssessment, description )){
+                    Toast.makeText(MainActivity.this, "Add new trip successfully!!", Toast.LENGTH_SHORT).show();
+                    secondDialog.cancel();
+                    tripList.clear();
+                    tripList.addAll(TripDao.getAll(MainActivity.this));
+                    tripListAdapter.notifyDataSetChanged();
+                }else {
+                    Toast.makeText(MainActivity.this, "Add new trip failed!!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private boolean allRequiredFieldsFilled(String name, String destination, String date) {
+        return !name.isEmpty() && !destination.isEmpty() && !date.isEmpty();
+
     }
 
 
