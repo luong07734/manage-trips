@@ -73,4 +73,11 @@ public class TripDao {
         return (row >0);
     }
 
+    public static boolean deleteAll(Context context){
+        DatabaseHelper helper = new DatabaseHelper(context);
+        SQLiteDatabase database = helper.getWritableDatabase();
+        int row = database.delete("trips", null,null);
+        return (row >0);
+    }
+
 }

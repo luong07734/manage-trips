@@ -1,5 +1,6 @@
 package com.example.tripmanagement;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 
 import android.app.DatePickerDialog;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -39,23 +41,30 @@ public class MainActivity extends AppCompatActivity {
     TripListAdapter tripListAdapter;
     ArrayList<Trip> tripList = new ArrayList<>();
     FloatingActionButton btnAdd;
-
     RecyclerTouchListener touchListener;
+    TextView tvDeleteAll;
+    ImageView ivBackground;
+    TextView tvNoTrip;
 
-    Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         // find view by id
         rvTrip = findViewById(R.id.trip_list_rv);
         btnAdd = findViewById(R.id.add_btn);
+        tvDeleteAll = findViewById(R.id.tv_delete_all);
+        ivBackground = findViewById(R.id.iv_background_image);
+        tvNoTrip = findViewById(R.id.tv_no_trip);
 
 
         // recyclerView settings
         tripList = TripDao.getAll(this);
+        displaySuitableViewsWhenListIsEmptyAndViceVersa();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         tripListAdapter = new TripListAdapter(this, tripList);
         rvTrip.setAdapter(tripListAdapter);
@@ -70,68 +79,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        // swipe action
         touchListener = new RecyclerTouchListener(this, rvTrip);
-        touchListener
-                .setClickable(new RecyclerTouchListener.OnRowClickListener() {
-                    @Override
-                    public void onRowClicked(int position) {
-                        Toast.makeText(getApplicationContext(), "on click new", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onIndependentViewClicked(int independentViewID, int position) {
-
-                    }
-                })
-                .setSwipeOptionViews(R.id.delete_task, R.id.edit_task)
-                .setSwipeable(R.id.rowFG, R.id.rowBG, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
-                    @Override
-                    public void onSwipeOptionClicked(int viewID, int position) {
-                        Trip selectedTrip = tripList.get(position);
-                        switch (viewID) {
-                            case R.id.delete_task:
-                                AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
-                                        MainActivity.this);
-                                // Setting Dialog Title
-                                alertDialogDelete.setTitle("Alert Dialog");
-                                // Setting OK Button
-                                alertDialogDelete.setPositiveButton("YES",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                if (TripDao.delete(MainActivity.this, selectedTrip.getTripId())) {
-                                                    Toast.makeText(getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
-                                                    tripList.clear();
-                                                    tripList.addAll(TripDao.getAll(MainActivity.this));
-                                                    tripListAdapter.notifyDataSetChanged();
-
-                                                } else {
-                                                    Toast.makeText(getApplicationContext(), "Delete failed", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-// Setting Negative "NO" Btn
-                                alertDialogDelete.setNegativeButton("NO",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.cancel();
-                                            }
-                                        });
-
-// Showing Alert Dialog
-                                alertDialogDelete.show();
-
-
-                                break;
-                            case R.id.edit_task:
-                                showEditDialog(position);
-                                break;
-
-                        }
-                    }
-                });
+        swipeToDisplayMenu();
         rvTrip.addOnItemTouchListener(touchListener);
 
+        // delete all
+        tvDeleteAll.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                showDeleteAllDialog();
+            }
+        });
 
     }
 
@@ -255,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                     tripList.clear();
                     tripList.addAll(TripDao.getAll(MainActivity.this));
                     tripListAdapter.notifyDataSetChanged();
+                    displaySuitableViewsWhenListIsEmptyAndViceVersa();
                     secondDialog.cancel();
                     parentDialog.cancel();
                 } else {
@@ -353,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                         tripList.clear();
                         tripList.addAll(TripDao.getAll(MainActivity.this));
                         tripListAdapter.notifyDataSetChanged();
+                        displaySuitableViewsWhenListIsEmptyAndViceVersa();
                         dialog.cancel();
                     } else {
                         Toast.makeText(MainActivity.this, "Update trip failed!!", Toast.LENGTH_SHORT).show();
@@ -365,6 +327,113 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void swipeToDisplayMenu(){
+        touchListener
+                .setClickable(new RecyclerTouchListener.OnRowClickListener() {
+                    @Override
+                    public void onRowClicked(int position) {
+                        Toast.makeText(getApplicationContext(), "on click new", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onIndependentViewClicked(int independentViewID, int position) {
+
+                    }
+                })
+                .setSwipeOptionViews(R.id.delete_task, R.id.edit_task)
+                .setSwipeable(R.id.rowFG, R.id.rowBG, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
+                    @Override
+                    public void onSwipeOptionClicked(int viewID, int position) {
+                        Trip selectedTrip = tripList.get(position);
+                        switch (viewID) {
+                            case R.id.delete_task:
+                                AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
+                                        MainActivity.this);
+                                // Setting Dialog Title
+                                alertDialogDelete.setTitle("Alert Dialog");
+                                // Setting OK Button
+                                alertDialogDelete.setPositiveButton("YES",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (TripDao.delete(MainActivity.this, selectedTrip.getTripId())) {
+                                                    Toast.makeText(getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
+                                                    tripList.clear();
+                                                    tripList.addAll(TripDao.getAll(MainActivity.this));
+                                                    tripListAdapter.notifyDataSetChanged();
+                                                    displaySuitableViewsWhenListIsEmptyAndViceVersa();
+
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), "Delete failed", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+// Setting Negative "NO" Btn
+                                alertDialogDelete.setNegativeButton("NO",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+// Showing Alert Dialog
+                                alertDialogDelete.show();
+
+
+                                break;
+                            case R.id.edit_task:
+                                showEditDialog(position);
+                                break;
+
+                        }
+                    }
+                });
+    }
+
+    private void showDeleteAllDialog(){
+        AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
+                MainActivity.this);
+        // Setting Dialog Title
+        alertDialogDelete.setTitle("Alert Dialog");
+        // Setting OK Button
+        alertDialogDelete.setPositiveButton("YES",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (TripDao.deleteAll(MainActivity.this)) {
+                            Toast.makeText(getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
+                            tripList.clear();
+                            tripList.addAll(TripDao.getAll(MainActivity.this));
+                            tripListAdapter.notifyDataSetChanged();
+                            displaySuitableViewsWhenListIsEmptyAndViceVersa();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Delete failed", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+// Setting Negative "NO" Btn
+        alertDialogDelete.setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+// Showing Alert Dialog
+        alertDialogDelete.show();
+    }
+
+    private void displaySuitableViewsWhenListIsEmptyAndViceVersa(){
+        if(tripList.isEmpty()){
+            tvNoTrip.setVisibility(View.VISIBLE);
+            ivBackground.setVisibility(View.VISIBLE);
+            tvDeleteAll.setVisibility(View.GONE);
+        }else {
+            tvNoTrip.setVisibility(View.GONE);
+            ivBackground.setVisibility(View.GONE);
+            tvDeleteAll.setVisibility(View.VISIBLE);
+        }
     }
 
 }
