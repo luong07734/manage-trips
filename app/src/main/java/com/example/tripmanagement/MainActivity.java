@@ -1,13 +1,22 @@
 package com.example.tripmanagement;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.tripmanagement.adapter.TripListAdapter;
@@ -31,6 +40,7 @@ import java.util.Calendar;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,6 +76,83 @@ public class MainActivity extends AppCompatActivity {
                 showAddDialog();
             }
         });
+
+        rvTrip.addOnItemTouchListener(
+                new RecyclerItemClickListener(MainActivity.this, rvTrip ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        // do whatever
+                        Toast.makeText(MainActivity.this, "on click ", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                        Toast.makeText(MainActivity.this, "on long click ", Toast.LENGTH_SHORT).show();
+                    }
+                })
+        );
+
+        // swipe to delete
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
+            private final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.teal_200));
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                Toast.makeText(MainActivity.this, "on Move", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                Toast.makeText(MainActivity.this, "on Swiped ", Toast.LENGTH_SHORT).show();
+                //Remove swiped item from list and notify the RecyclerView
+                int position = viewHolder.getAdapterPosition();
+//                arrayList.remove(position);
+//                adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+//                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+//                    // Get RecyclerView item from the ViewHolder
+//                    View itemView = viewHolder.itemView;
+//
+//                    Paint p = new Paint();
+//                    if (dX > 0) {
+//                        /* Set your color for positive displacement */
+//
+//                        // Draw Rect with varying right side, equal to displacement dX
+//                        c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX,
+//                                (float) itemView.getBottom(), p);
+//                    } else {
+//                        /* Set your color for negative displacement */
+//
+//                        // Draw Rect with varying left side, equal to the item's right side plus negative displacement dX
+//                        c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(),
+//                                (float) itemView.getRight(), (float) itemView.getBottom(), p);
+//                    }
+//
+//                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+//                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+                View itemView = viewHolder.itemView;
+
+                if (dX > 0) {
+                    background.setBounds(itemView.getLeft(), itemView.getTop(), itemView.getLeft() + ((int) dX), itemView.getBottom());
+                } else if (dX < 0) {
+                    background.setBounds(itemView.getRight() + ((int) dX), itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                } else {
+                    background.setBounds(0, 0, 0, 0);
+                }
+
+                background.draw(c);
+
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(rvTrip);
 
 
     }
@@ -140,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (allRequiredFieldsFilled(name, destination, date)) {
-                    showConfirmationDialog(name, destination, date, riskAssessment, description);
+                    showConfirmationDialog(dialog, name, destination, date, riskAssessment, description);
                 }
                 else{
                     // TODO
@@ -152,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showConfirmationDialog(String name, String destination, String date, String riskAssessment, String description) {
+    private void showConfirmationDialog(Dialog parentDialog, String name, String destination, String date, String riskAssessment, String description) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_trip_confirm, null);
@@ -189,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
                 if(TripDao.insert(MainActivity.this, name, destination, date, riskAssessment, description )){
                     Toast.makeText(MainActivity.this, "Add new trip successfully!!", Toast.LENGTH_SHORT).show();
                     secondDialog.cancel();
+                    parentDialog.cancel();
                     tripList.clear();
                     tripList.addAll(TripDao.getAll(MainActivity.this));
                     tripListAdapter.notifyDataSetChanged();
@@ -205,4 +293,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
 }
+
