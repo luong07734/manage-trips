@@ -37,7 +37,7 @@ public class TripDao {
         return listOfTrips;
     }
 
-    // insert a strip
+    // insert a trip
     public static boolean insert(Context context, String name, String destination, String date, String riskAssessment, String description){
         DatabaseHelper helper = new DatabaseHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
@@ -49,6 +49,28 @@ public class TripDao {
         values.put("description", description);
         long newRow = database.insert("trips", null, values);
         return (newRow >0);
+    }
+
+    // delete a trip
+    public static boolean delete(Context context, int tripId){
+        DatabaseHelper helper = new DatabaseHelper(context);
+        SQLiteDatabase database = helper.getWritableDatabase();
+        int row = database.delete("trips", "trip_id=?", new String[]{tripId+""});
+        return (row >0);
+    }
+
+    // update a trip
+    public static boolean update(Context context, Trip trip){
+        DatabaseHelper helper = new DatabaseHelper(context);
+        SQLiteDatabase database = helper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", trip.getTripName());
+        values.put("destination", trip.getDestination());
+        values.put("date", trip.getDate());
+        values.put("risk_assessment", trip.getRiskAssessment());
+        values.put("description", trip.getDescription());
+        int row = database.update("trips", values, "trip_id=?", new String[]{trip.getTripId() + ""});
+        return (row >0);
     }
 
 }

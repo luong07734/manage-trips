@@ -1,22 +1,14 @@
 package com.example.tripmanagement;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.example.tripmanagement.adapter.TripListAdapter;
@@ -30,10 +22,9 @@ import android.widget.DatePicker;
 
 import android.app.DatePickerDialog;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -48,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     TripListAdapter tripListAdapter;
     ArrayList<Trip> tripList = new ArrayList<>();
     FloatingActionButton btnAdd;
+
+    RecyclerTouchListener touchListener;
 
     Calendar calendar;
 
@@ -77,82 +70,67 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        rvTrip.addOnItemTouchListener(
-                new RecyclerItemClickListener(MainActivity.this, rvTrip ,new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override public void onItemClick(View view, int position) {
-                        // do whatever
-                        Toast.makeText(MainActivity.this, "on click ", Toast.LENGTH_SHORT).show();
+
+        touchListener = new RecyclerTouchListener(this, rvTrip);
+        touchListener
+                .setClickable(new RecyclerTouchListener.OnRowClickListener() {
+                    @Override
+                    public void onRowClicked(int position) {
+                        Toast.makeText(getApplicationContext(), "on click new", Toast.LENGTH_SHORT).show();
                     }
 
-                    @Override public void onLongItemClick(View view, int position) {
-                        // do whatever
-                        Toast.makeText(MainActivity.this, "on long click ", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onIndependentViewClicked(int independentViewID, int position) {
+
                     }
                 })
-        );
+                .setSwipeOptionViews(R.id.delete_task, R.id.edit_task)
+                .setSwipeable(R.id.rowFG, R.id.rowBG, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
+                    @Override
+                    public void onSwipeOptionClicked(int viewID, int position) {
+                        Trip selectedTrip = tripList.get(position);
+                        switch (viewID) {
+                            case R.id.delete_task:
+                                AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
+                                        MainActivity.this);
+                                // Setting Dialog Title
+                                alertDialogDelete.setTitle("Alert Dialog");
+                                // Setting OK Button
+                                alertDialogDelete.setPositiveButton("YES",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (TripDao.delete(MainActivity.this, selectedTrip.getTripId())) {
+                                                    Toast.makeText(getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
+                                                    tripList.clear();
+                                                    tripList.addAll(TripDao.getAll(MainActivity.this));
+                                                    tripListAdapter.notifyDataSetChanged();
 
-        // swipe to delete
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
-            private final ColorDrawable background = new ColorDrawable(getResources().getColor(R.color.teal_200));
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), "Delete failed", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+// Setting Negative "NO" Btn
+                                alertDialogDelete.setNegativeButton("NO",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.cancel();
+                                            }
+                                        });
 
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                Toast.makeText(MainActivity.this, "on Move", Toast.LENGTH_SHORT).show();
-                return false;
-            }
+// Showing Alert Dialog
+                                alertDialogDelete.show();
 
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                Toast.makeText(MainActivity.this, "on Swiped ", Toast.LENGTH_SHORT).show();
-                //Remove swiped item from list and notify the RecyclerView
-                int position = viewHolder.getAdapterPosition();
-//                arrayList.remove(position);
-//                adapter.notifyDataSetChanged();
 
-            }
+                                break;
+                            case R.id.edit_task:
+                                showEditDialog(position);
+                                break;
 
-            @Override
-            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-//                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-//                    // Get RecyclerView item from the ViewHolder
-//                    View itemView = viewHolder.itemView;
-//
-//                    Paint p = new Paint();
-//                    if (dX > 0) {
-//                        /* Set your color for positive displacement */
-//
-//                        // Draw Rect with varying right side, equal to displacement dX
-//                        c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX,
-//                                (float) itemView.getBottom(), p);
-//                    } else {
-//                        /* Set your color for negative displacement */
-//
-//                        // Draw Rect with varying left side, equal to the item's right side plus negative displacement dX
-//                        c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(),
-//                                (float) itemView.getRight(), (float) itemView.getBottom(), p);
-//                    }
-//
-//                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-//                }
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-
-                View itemView = viewHolder.itemView;
-
-                if (dX > 0) {
-                    background.setBounds(itemView.getLeft(), itemView.getTop(), itemView.getLeft() + ((int) dX), itemView.getBottom());
-                } else if (dX < 0) {
-                    background.setBounds(itemView.getRight() + ((int) dX), itemView.getTop(), itemView.getRight(), itemView.getBottom());
-                } else {
-                    background.setBounds(0, 0, 0, 0);
-                }
-
-                background.draw(c);
-
-            }
-        };
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(rvTrip);
+                        }
+                    }
+                });
+        rvTrip.addOnItemTouchListener(touchListener);
 
 
     }
@@ -228,8 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (allRequiredFieldsFilled(name, destination, date)) {
                     showConfirmationDialog(dialog, name, destination, date, riskAssessment, description);
-                }
-                else{
+                } else {
                     // TODO
                 }
 
@@ -269,18 +246,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnOk.setOnClickListener(new View.OnClickListener(){
+        btnOk.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                if(TripDao.insert(MainActivity.this, name, destination, date, riskAssessment, description )){
+                if (TripDao.insert(MainActivity.this, name, destination, date, riskAssessment, description)) {
                     Toast.makeText(MainActivity.this, "Add new trip successfully!!", Toast.LENGTH_SHORT).show();
-                    secondDialog.cancel();
-                    parentDialog.cancel();
                     tripList.clear();
                     tripList.addAll(TripDao.getAll(MainActivity.this));
                     tripListAdapter.notifyDataSetChanged();
-                }else {
+                    secondDialog.cancel();
+                    parentDialog.cancel();
+                } else {
                     Toast.makeText(MainActivity.this, "Add new trip failed!!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -292,7 +269,103 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void showEditDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_edit_trip, null);
+        builder.setView(view);
+        Dialog dialog = builder.create();
+        dialog.show();
 
+        TextInputEditText tietName = view.findViewById(R.id.edit_trip_name_tiet);
+        TextInputEditText tietDestination = view.findViewById(R.id.edit_trip_destination_tiet);
+        TextInputEditText tietDescription = view.findViewById(R.id.edit_trip_description_tiet);
+        TextInputEditText tietDate = view.findViewById(R.id.edit_trip_date_tiet);
+        RadioButton rbYes = view.findViewById(R.id.edit_radio_button_yes);
+        RadioButton rbNo = view.findViewById(R.id.edit_radio_button_no);
+        Button btnCancel = view.findViewById(R.id.edit_cancel_btn);
+        Button btnUpdate = view.findViewById(R.id.update_trip_btn);
+
+        Trip selectedTrip = tripList.get(position);
+        tietName.setText(selectedTrip.getTripName());
+        tietDescription.setText(selectedTrip.getDescription());
+        tietDestination.setText(selectedTrip.getDestination());
+        tietDate.setText(selectedTrip.getDate());
+        if (selectedTrip.getRiskAssessment().equals("Yes")) {
+            rbYes.setChecked(true);
+        } else {
+            rbNo.setChecked(true);
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                calendar.set(Calendar.YEAR, i);
+                calendar.set(Calendar.MONTH, i1);
+                calendar.set(Calendar.DAY_OF_MONTH, i2);
+
+                updateCalenderOnTextField();
+            }
+
+            private void updateCalenderOnTextField() {
+                String format = "dd/MM/yyyy";
+                SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+                tietDate.setText(sdf.format(calendar.getTime()));
+            }
+        };
+
+
+        // date textfield onclick
+        tietDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(MainActivity.this, date, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        // cancel onclick
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if (allRequiredFieldsFilled(tietName.getText().toString(), tietDestination.getText().toString(), tietDate.getText().toString())) {
+                    selectedTrip.setTripName(tietName.getText().toString());
+                    selectedTrip.setDestination(tietDestination.getText().toString());
+                    selectedTrip.setDate(tietDate.getText().toString());
+                    selectedTrip.setDescription(tietDescription.getText().toString());
+                    selectedTrip.setRiskAssessment("Yes");
+                    if (rbNo.isChecked()) {
+                        selectedTrip.setRiskAssessment("No");
+                    }
+                    if (TripDao.update(MainActivity.this, selectedTrip)) {
+                        Toast.makeText(MainActivity.this, "Update trip successfully!!", Toast.LENGTH_SHORT).show();
+                        tripList.clear();
+                        tripList.addAll(TripDao.getAll(MainActivity.this));
+                        tripListAdapter.notifyDataSetChanged();
+                        dialog.cancel();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Update trip failed!!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // TODO
+                }
+
+
+            }
+        });
+
+    }
 
 }
 
