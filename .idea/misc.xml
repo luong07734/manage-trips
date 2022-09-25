@@ -5,10 +5,10 @@
       <map>
         <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1225" />
         <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/layout/activity_main.xml" value="0.22" />
-        <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/layout/dialog_add_trip.xml" value="0.33" />
+        <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/layout/dialog_add_trip.xml" value="0.2949438202247191" />
         <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/layout/dialog_add_trip_confirm.xml" value="0.33" />
-        <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/layout/dialog_edit_trip.xml" value="0.12048192771084337" />
-        <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/layout/row_trip.xml" value="0.25" />
+        <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/layout/dialog_edit_trip.xml" value="0.16" />
+        <entry key="..\:/Users/Ky Luong/Documents/GitHub/manage-trips/app/src/main/res/layout/row_trip.xml" value="0.5" />
       </map>
     </option>
   </component>

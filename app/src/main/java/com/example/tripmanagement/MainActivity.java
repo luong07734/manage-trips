@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 if (allRequiredFieldsFilled(name, destination, date)) {
                     showConfirmationDialog(dialog, name, destination, date, riskAssessment, description);
                 } else {
-                    // TODO
+                    Toast.makeText(MainActivity.this, "Please fill all the required fields", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Update trip failed!!", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    // TODO
+                    Toast.makeText(MainActivity.this, "Please fill all the required fields", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -352,7 +352,8 @@ public class MainActivity extends AppCompatActivity {
                                 AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
                                         MainActivity.this);
                                 // Setting Dialog Title
-                                alertDialogDelete.setTitle("Alert Dialog");
+                                alertDialogDelete.setTitle("Delete the trip");
+                                alertDialogDelete.setMessage("Are you sure you want to delete this trip?");
                                 // Setting OK Button
                                 alertDialogDelete.setPositiveButton("YES",
                                         new DialogInterface.OnClickListener() {
@@ -395,7 +396,8 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
                 MainActivity.this);
         // Setting Dialog Title
-        alertDialogDelete.setTitle("Alert Dialog");
+        alertDialogDelete.setTitle("Delete all the trips");
+        alertDialogDelete.setMessage("Are you sure you want to delete all the trips?");
         // Setting OK Button
         alertDialogDelete.setPositiveButton("YES",
                 new DialogInterface.OnClickListener() {

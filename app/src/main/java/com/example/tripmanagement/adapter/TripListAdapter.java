@@ -161,6 +161,7 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.txtDate.setText(trip.getDate());
                 int color = ContextCompat.getColor(context, R.color.recycler_0);
                 viewHolder.relativeLayout.setBackgroundColor(color);
+                viewHolder.imgIcon.setImageResource(R.drawable.rv_icon_0);
                 break;
 
             case 1:
@@ -170,6 +171,7 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder1.txtDate.setText(trip.getDate());
                 int color1 = ContextCompat.getColor(context, R.color.recycler_1);
                 viewHolder1.relativeLayout.setBackgroundColor(color1);
+                viewHolder1.imgIcon.setImageResource(R.drawable.rv_icon_1);
                 break;
 
             case 2:
@@ -179,6 +181,7 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder2.txtDate.setText(trip.getDate());
                 int color2 = ContextCompat.getColor(context, R.color.recycler_2);
                 viewHolder2.relativeLayout.setBackgroundColor(color2);
+                viewHolder2.imgIcon.setImageResource(R.drawable.rv_icon_2);
                 break;
 
             case 3:
@@ -188,6 +191,7 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder3.txtDate.setText(trip.getDate());
                 int color3 = ContextCompat.getColor(context, R.color.recycler_3);
                 viewHolder3.relativeLayout.setBackgroundColor(color3);
+                viewHolder3.imgIcon.setImageResource(R.drawable.rv_icon_3);
                 break;
 
             case 4:
@@ -197,6 +201,7 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder4.txtDate.setText(trip.getDate());
                 int color4 = ContextCompat.getColor(context, R.color.recycler_4);
                 viewHolder4.relativeLayout.setBackgroundColor(color4);
+                viewHolder4.imgIcon.setImageResource(R.drawable.rv_icon_4);
                 break;
 
             case 5:
@@ -206,6 +211,7 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder5.txtDate.setText(trip.getDate());
                 int color5 = ContextCompat.getColor(context, R.color.recycler_5);
                 viewHolder5.relativeLayout.setBackgroundColor(color5);
+                viewHolder5.imgIcon.setImageResource(R.drawable.rv_icon_5);
                 break;
         }
 

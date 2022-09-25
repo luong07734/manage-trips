@@ -10,10 +10,11 @@
 
 
     <color name="background">#252525</color>
-    <color name="recycler_0">#FD99FF</color>
+    <color name="recycler_0">#91F48F</color>
     <color name="recycler_1">#FF9E9E</color>
-    <color name="recycler_2">#91F48F</color>
-    <color name="recycler_3">#FFF599</color>
+    <color name="recycler_2">#FFF599</color>FFF599
+    <color name="recycler_3">#FD99FF</color>
     <color name="recycler_4">#9EFFFF</color>
     <color name="recycler_5">#B69CFF</color>
+    <color name="dialog_add">#00316A</color>
 </resources>
