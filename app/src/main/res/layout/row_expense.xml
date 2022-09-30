@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    android:background="@color/recycler_background"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/expense_type_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="TRAVEL" />
+
+    <TextView
+        android:id="@+id/expense_amount_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="@id/expense_type_tv"
+        app:layout_constraintTop_toBottomOf="@id/expense_type_tv"
+        tools:text="$100.00" />
+
+    <TextView
+        android:id="@+id/expense_comment_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/expense_amount_tv"
+        app:layout_constraintTop_toBottomOf="@id/expense_amount_tv"
+        tools:text="The app should store all details entered on the device in an SQLite database." />
+
+    <TextView
+        android:id="@+id/expense_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@id/expense_delete_btn"
+        app:layout_constraintTop_toBottomOf="@id/expense_delete_btn"
+        tools:text="22/11/2022 10:52PM" />
+
+    <ImageView
+        android:id="@+id/expense_delete_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_delete_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@android:color/white" />
+
+
+    <ImageView
+        android:id="@+id/expense_edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_edit_24"
+        app:layout_constraintEnd_toStartOf="@id/expense_delete_btn"
+        app:layout_constraintTop_toTopOf="@id/expense_delete_btn"
+        app:tint="@android:color/white" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

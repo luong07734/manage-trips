@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -334,7 +335,15 @@ public class MainActivity extends AppCompatActivity {
                 .setClickable(new RecyclerTouchListener.OnRowClickListener() {
                     @Override
                     public void onRowClicked(int position) {
-                        Toast.makeText(getApplicationContext(), "on click new", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, ExpenseActivity.class);
+                        Trip selectedTrip = tripList.get(position);
+                        intent.putExtra("trip_id",selectedTrip.getTripId());
+                        intent.putExtra("trip_name",selectedTrip.getTripName());
+                        intent.putExtra("trip_destination", selectedTrip.getDestination());
+                        intent.putExtra("trip_date", selectedTrip.getDate());
+                        intent.putExtra("trip_description", selectedTrip.getDescription());
+                        intent.putExtra("trip_risk_assessment", selectedTrip.getRiskAssessment());
+                        startActivity(intent);
                     }
 
                     @Override
