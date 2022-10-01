@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.example.tripmanagement.adapter.TripListAdapter;
+import com.example.tripmanagement.dao.ExpenseDao;
 import com.example.tripmanagement.dao.TripDao;
 import com.example.tripmanagement.model.Trip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Locale;
 
 
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         // recyclerView settings
         tripList = TripDao.getAll(this);
+        Collections.reverse(tripList);
         displaySuitableViewsWhenListIsEmptyAndViceVersa();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         tripListAdapter = new TripListAdapter(this, tripList);
@@ -122,10 +125,10 @@ public class MainActivity extends AppCompatActivity {
                 calendar.set(Calendar.MONTH, i1);
                 calendar.set(Calendar.DAY_OF_MONTH, i2);
 
-                updateCalenderOnTextField();
+                updateCalendarOnTextField();
             }
 
-            private void updateCalenderOnTextField() {
+            private void updateCalendarOnTextField() {
                 String format = "dd/MM/yyyy";
                 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
                 tietDate.setText(sdf.format(calendar.getTime()));
@@ -215,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Add new trip successfully!!", Toast.LENGTH_SHORT).show();
                     tripList.clear();
                     tripList.addAll(TripDao.getAll(MainActivity.this));
+                    Collections.reverse(tripList);
                     tripListAdapter.notifyDataSetChanged();
                     displaySuitableViewsWhenListIsEmptyAndViceVersa();
                     secondDialog.cancel();
@@ -314,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Update trip successfully!!", Toast.LENGTH_SHORT).show();
                         tripList.clear();
                         tripList.addAll(TripDao.getAll(MainActivity.this));
+                        Collections.reverse(tripList);
                         tripListAdapter.notifyDataSetChanged();
                         displaySuitableViewsWhenListIsEmptyAndViceVersa();
                         dialog.cancel();
@@ -368,9 +373,12 @@ public class MainActivity extends AppCompatActivity {
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 if (TripDao.delete(MainActivity.this, selectedTrip.getTripId())) {
+                                                    // delete expense
+                                                    ExpenseDao.deleteExpensesOfATrip(MainActivity.this, selectedTrip.getTripId());
                                                     Toast.makeText(getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
                                                     tripList.clear();
                                                     tripList.addAll(TripDao.getAll(MainActivity.this));
+                                                    Collections.reverse(tripList);
                                                     tripListAdapter.notifyDataSetChanged();
                                                     displaySuitableViewsWhenListIsEmptyAndViceVersa();
 
@@ -412,9 +420,12 @@ public class MainActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (TripDao.deleteAll(MainActivity.this)) {
+                            // delete all expense
+                            ExpenseDao.deleteAll(MainActivity.this);
                             Toast.makeText(getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
                             tripList.clear();
                             tripList.addAll(TripDao.getAll(MainActivity.this));
+                            Collections.reverse(tripList);
                             tripListAdapter.notifyDataSetChanged();
                             displaySuitableViewsWhenListIsEmptyAndViceVersa();
 

@@ -69,4 +69,19 @@ public class ExpenseDao {
         int row = database.delete("expenses", null,null);
         return (row >0);
     }
+
+    public static boolean deleteExpensesOfATrip(Context context, int tripId){
+        DatabaseHelper helper = new DatabaseHelper(context);
+        SQLiteDatabase database = helper.getWritableDatabase();
+        int row = database.delete("expenses", "trip_id=?",new String[]{tripId+""});
+        return (row >0);
+    }
+
+    // delete an expense
+    public static boolean delete(Context context, int expenseId){
+        DatabaseHelper helper = new DatabaseHelper(context);
+        SQLiteDatabase database = helper.getWritableDatabase();
+        int row = database.delete("expenses", "expenses_id=?", new String[]{expenseId+""});
+        return (row >0);
+    }
 }
