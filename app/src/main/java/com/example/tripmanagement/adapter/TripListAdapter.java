@@ -220,7 +220,7 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position){
-        return position % 6;
+        return tripList.get(position).getTripId() % 6;
     }
 
 
