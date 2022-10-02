@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -38,7 +39,13 @@ public class ExpenseActivity extends AppCompatActivity {
     RecyclerView rvExpense;
     ExpenseListAdapter expenseListAdapter;
     TextView tvAdd;
+    ImageView btnBack;
     ArrayList<Expense> expenseList = new ArrayList<>();
+    TextView tvNameInfo;
+    TextView tvDestinationInfo;
+    TextView tvDateInfo;
+    TextView tvRiskAssessmentInfo;
+    TextView tvDescriptionInfo;
     int tripId = 0;
 
     @Override
@@ -60,6 +67,12 @@ public class ExpenseActivity extends AppCompatActivity {
 
         tvAdd = findViewById(R.id.expense_add_btn);
         rvExpense = findViewById(R.id.expense_list_rv);
+        btnBack = findViewById(R.id.back_btn);
+        tvNameInfo = findViewById(R.id.tv_name_info);
+        tvDestinationInfo = findViewById(R.id.tv_destination_info);
+        tvDateInfo = findViewById(R.id.tv_date_info);
+        tvRiskAssessmentInfo = findViewById(R.id.tv_risk_assessment_info);
+        tvDescriptionInfo = findViewById(R.id.tv_description_info);
 
         // recycler view
         expenseList = ExpenseDao.getExpenseList(this, tripId);
@@ -70,12 +83,27 @@ public class ExpenseActivity extends AppCompatActivity {
         rvExpense.setLayoutManager(linearLayoutManager);
         rvExpense.setAdapter(expenseListAdapter);
 
+        // setup textviews
+        tvNameInfo.setText(tripName);
+        tvDestinationInfo.setText(tripDestination);
+        tvDateInfo.setText(tripDate);
+        tvDescriptionInfo.setText(tripDescription);
+        tvRiskAssessmentInfo.setText(tripRiskAssessment);
+
 
         tvAdd.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 showAddDialog();
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
 
@@ -201,4 +229,6 @@ public class ExpenseActivity extends AppCompatActivity {
         return !type.isEmpty() && !amount.isEmpty();
 
     }
+
+
 }

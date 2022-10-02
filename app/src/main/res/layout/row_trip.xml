@@ -73,16 +73,21 @@
     </LinearLayout>
 
 
-
     <RelativeLayout
-        android:layout_marginVertical="4dp"
         android:id="@+id/rowFG"
         android:layout_width="match_parent"
         android:layout_height="72dp"
+        android:layout_marginVertical="4dp"
         android:background="@color/teal_200"
         android:clickable="true"
-        android:padding="6dp"
         android:focusable="true">
+
+        <View
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bg_end_view" />
+
 
         <ImageView
             android:id="@+id/icon_iv"
@@ -102,15 +107,13 @@
             android:layout_marginStart="72dp"
             android:layout_marginEnd="72dp"
             android:ellipsize="end"
+            android:maxLines="2"
             android:paddingStart="5dp"
-            android:singleLine="true"
             android:text="Content"
             android:textColor="@color/black"
             android:textSize="12sp" />
 
         <TextView
-            android:ellipsize="end"
-            android:maxLines="1"
             android:id="@+id/trip_name_tv"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -119,7 +122,9 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="72dp"
             android:layout_marginEnd="16dp"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxLines="1"
             android:paddingStart="5dp"
             android:paddingBottom="5dp"
             android:text="Username"
@@ -140,7 +145,6 @@
 
 
     </RelativeLayout>
-
 
 
 </RelativeLayout>
