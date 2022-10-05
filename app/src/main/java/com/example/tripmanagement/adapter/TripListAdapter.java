@@ -228,4 +228,9 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemCount() {
         return tripList.size();
     }
+
+    public void setFilteredList(ArrayList<Trip> filteredList){
+        this.tripList = filteredList;
+        notifyDataSetChanged();
+    }
 }

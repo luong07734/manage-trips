@@ -3,6 +3,7 @@ package com.example.tripmanagement;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,6 +11,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -27,6 +29,7 @@ import android.app.DatePickerDialog;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
     TextView tvDeleteAll;
     ImageView ivBackground;
     TextView tvNoTrip;
-
+    SearchView svSearch;
+    String query = "";
+    ArrayList<Trip> filteredTripList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         tvDeleteAll = findViewById(R.id.tv_delete_all);
         ivBackground = findViewById(R.id.iv_background_image);
         tvNoTrip = findViewById(R.id.tv_no_trip);
+        svSearch = findViewById(R.id.sv_search);
 
 
         // recyclerView settings
@@ -74,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         rvTrip.setAdapter(tripListAdapter);
         rvTrip.setLayoutManager(linearLayoutManager);
 
+        filterList(query);
         // add button onclick
         btnAdd.setOnClickListener(new View.OnClickListener() {
 
@@ -89,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         rvTrip.addOnItemTouchListener(touchListener);
 
         // delete all
-        tvDeleteAll.setOnClickListener(new View.OnClickListener(){
+        tvDeleteAll.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -97,6 +104,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // search
+        svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                query = s;
+                filterList(s);
+                return false;
+            }
+        });
+
+    }
+
+    private void filterList(String text) {
+        filteredTripList.clear();
+        for (Trip trip : tripList) {
+            if (trip.getTripName().toLowerCase().contains(text.toLowerCase())) {
+                filteredTripList.add(trip);
+            }
+        }
+        tripListAdapter.setFilteredList(filteredTripList);
+        if (filteredTripList.isEmpty()) {
+            Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showAddDialog() {
@@ -220,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
                     tripList.addAll(TripDao.getAll(MainActivity.this));
                     Collections.reverse(tripList);
                     tripListAdapter.notifyDataSetChanged();
+                    filterList(query);
                     displaySuitableViewsWhenListIsEmptyAndViceVersa();
                     secondDialog.cancel();
                     parentDialog.cancel();
@@ -235,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void showEditDialog(int position) {
+    private void showEditDialog(Trip selectedTrip) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_edit_trip, null);
@@ -252,7 +288,6 @@ public class MainActivity extends AppCompatActivity {
         Button btnCancel = view.findViewById(R.id.edit_cancel_btn);
         Button btnUpdate = view.findViewById(R.id.update_trip_btn);
 
-        Trip selectedTrip = tripList.get(position);
         tietName.setText(selectedTrip.getTripName());
         tietDescription.setText(selectedTrip.getDescription());
         tietDestination.setText(selectedTrip.getDestination());
@@ -320,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
                         tripList.addAll(TripDao.getAll(MainActivity.this));
                         Collections.reverse(tripList);
                         tripListAdapter.notifyDataSetChanged();
+                        filterList(query);
                         displaySuitableViewsWhenListIsEmptyAndViceVersa();
                         dialog.cancel();
                     } else {
@@ -335,15 +371,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void swipeToDisplayMenu(){
+    private void swipeToDisplayMenu() {
         touchListener
                 .setClickable(new RecyclerTouchListener.OnRowClickListener() {
                     @Override
                     public void onRowClicked(int position) {
                         Intent intent = new Intent(MainActivity.this, ExpenseActivity.class);
-                        Trip selectedTrip = tripList.get(position);
-                        intent.putExtra("trip_id",selectedTrip.getTripId());
-                        intent.putExtra("trip_name",selectedTrip.getTripName());
+                        Trip selectedTrip = filteredTripList.get(position);
+                        intent.putExtra("trip_id", selectedTrip.getTripId());
+                        intent.putExtra("trip_name", selectedTrip.getTripName());
                         intent.putExtra("trip_destination", selectedTrip.getDestination());
                         intent.putExtra("trip_date", selectedTrip.getDate());
                         intent.putExtra("trip_description", selectedTrip.getDescription());
@@ -360,7 +396,8 @@ public class MainActivity extends AppCompatActivity {
                 .setSwipeable(R.id.rowFG, R.id.rowBG, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
                     @Override
                     public void onSwipeOptionClicked(int viewID, int position) {
-                        Trip selectedTrip = tripList.get(position);
+                        Trip selectedTrip = filteredTripList.get(position);
+                        Log.i("test1", filteredTripList.toString());
                         switch (viewID) {
                             case R.id.delete_task:
                                 AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
@@ -380,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
                                                     tripList.addAll(TripDao.getAll(MainActivity.this));
                                                     Collections.reverse(tripList);
                                                     tripListAdapter.notifyDataSetChanged();
+                                                    filterList(query);
                                                     displaySuitableViewsWhenListIsEmptyAndViceVersa();
 
                                                 } else {
@@ -387,21 +425,19 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             }
                                         });
-// Setting Negative "NO" Btn
+                                // Setting Negative "NO" Btn
                                 alertDialogDelete.setNegativeButton("NO",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.cancel();
                                             }
                                         });
-
-// Showing Alert Dialog
+                                // Showing Alert Dialog
                                 alertDialogDelete.show();
-
 
                                 break;
                             case R.id.edit_task:
-                                showEditDialog(position);
+                                showEditDialog(selectedTrip);
                                 break;
 
                         }
@@ -409,7 +445,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void showDeleteAllDialog(){
+    private void showDeleteAllDialog() {
         AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
                 MainActivity.this);
         // Setting Dialog Title
@@ -446,12 +482,12 @@ public class MainActivity extends AppCompatActivity {
         alertDialogDelete.show();
     }
 
-    private void displaySuitableViewsWhenListIsEmptyAndViceVersa(){
-        if(tripList.isEmpty()){
+    private void displaySuitableViewsWhenListIsEmptyAndViceVersa() {
+        if (tripList.isEmpty()) {
             tvNoTrip.setVisibility(View.VISIBLE);
             ivBackground.setVisibility(View.VISIBLE);
             tvDeleteAll.setVisibility(View.GONE);
-        }else {
+        } else {
             tvNoTrip.setVisibility(View.GONE);
             ivBackground.setVisibility(View.GONE);
             tvDeleteAll.setVisibility(View.VISIBLE);
