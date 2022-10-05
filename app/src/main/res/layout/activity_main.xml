@@ -7,12 +7,22 @@
     android:background="@color/background"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/iv_background_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha=".5"
+        android:src="@drawable/img_no_trip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:fontFamily="@font/nunito_variablefont_wght"
         android:text="Trips"
         android:textColor="@color/white"
@@ -47,7 +57,7 @@
             />
 
         <ImageView
-            android:id="@+id/fragment_contact_list_iv_search_picker"
+            android:id="@+id/iv_search_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center"
@@ -56,26 +66,23 @@
             tools:ignore="ContentDescription" />
     </com.google.android.material.card.MaterialCardView>
 
-    <ImageView
-        android:id="@+id/search_btn"
 
+    <TextView
+        android:id="@+id/filter_add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_baseline_search_24"
-        app:layout_constraintBottom_toBottomOf="@id/tv_header"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_header" />
+        android:layout_marginTop="4dp"
+        android:drawableLeft="@drawable/ic_baseline_filter_list_24"
+        android:drawablePadding="4dp"
+        android:gravity="center_vertical"
+        android:text="Add filter"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/cv_search"
+        app:layout_constraintEnd_toEndOf="@id/cv_search"
+/>
 
-    <ImageView
-        android:id="@+id/iv_background_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:alpha=".5"
-        android:src="@drawable/img_no_trip"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+
 
     <TextView
         android:id="@+id/tv_no_trip"

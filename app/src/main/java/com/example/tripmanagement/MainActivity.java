@@ -52,8 +52,12 @@ public class MainActivity extends AppCompatActivity {
     ImageView ivBackground;
     TextView tvNoTrip;
     SearchView svSearch;
+    ImageView btnFilter;
+
     String query = "";
     ArrayList<Trip> filteredTripList = new ArrayList<>();
+    int searchBy = 0; // trip name
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         ivBackground = findViewById(R.id.iv_background_image);
         tvNoTrip = findViewById(R.id.tv_no_trip);
         svSearch = findViewById(R.id.sv_search);
+        btnFilter = findViewById(R.id.iv_search_picker);
 
 
         // recyclerView settings
@@ -119,15 +124,73 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // filter
+        btnFilter.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                chooseSearchType();
+            }
+        });
+
+    }
+
+    private void chooseSearchType() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Search by");
+
+        // add a radio button list
+        String[] options = {"Trip Name", "Trip Destination"};
+        final int[] choice = {0};
+        builder.setSingleChoiceItems(options, searchBy, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // user checked an item
+                Toast.makeText(MainActivity.this, which + "", Toast.LENGTH_SHORT).show();
+                choice[0] = which;
+            }
+        });
+
+        // add OK and Cancel buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // user clicked OK
+                searchBy = choice[0];
+                if(searchBy == 0){
+                    svSearch.setQueryHint("Search by trip name");
+                }else {
+                    svSearch.setQueryHint("Search by trip destination");
+                }
+                filterList(query);
+                dialog.cancel();
+
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void filterList(String text) {
         filteredTripList.clear();
-        for (Trip trip : tripList) {
-            if (trip.getTripName().toLowerCase().contains(text.toLowerCase())) {
-                filteredTripList.add(trip);
+        if (searchBy == 0) {
+            for (Trip trip : tripList) {
+                if (trip.getTripName().toLowerCase().contains(text.toLowerCase())) {
+                    filteredTripList.add(trip);
+                }
             }
         }
+        else {
+            for (Trip trip : tripList) {
+                if (trip.getDestination().toLowerCase().contains(text.toLowerCase())) {
+                    filteredTripList.add(trip);
+                }
+            }
+        }
+
         tripListAdapter.setFilteredList(filteredTripList);
         if (filteredTripList.isEmpty()) {
             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
