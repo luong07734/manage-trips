@@ -127,7 +127,7 @@ public class ExpenseActivity extends AppCompatActivity {
         Button btnAdd = view.findViewById(R.id.add_expense_btn);
 
         Calendar calendar = Calendar.getInstance();
-        String dateFormat = "dd/MM/yyyy";
+        String dateFormat = "MM/dd/yyyy";
         String timeFormat = "HH:mm";
         SimpleDateFormat dateSdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
         tietDate.setText(dateSdf.format(calendar.getTime()));

@@ -18,4 +18,5 @@
     <color name="recycler_5">#B69CFF</color>
     <color name="dialog_add">#00316A</color>
     <color name="recycler_background">#1F2732</color>
+    <color name="spinner_color">#f7f7f7</color>
 </resources>

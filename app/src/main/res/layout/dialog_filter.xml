@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dialog_add">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="FILTER FOR SEARCH RESULTS"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/tv_filter_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_filter_risk"
+            app:layout_constraintLeft_toLeftOf="@id/tv_filter_risk"
+            android:layout_marginTop="32dp"
+            android:text="DATE"/>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_filter_search"
+            app:layout_constraintTop_toTopOf="@id/tv_filter_date"
+            app:layout_constraintBottom_toBottomOf="@id/tv_filter_date"
+            app:layout_constraintStart_toStartOf="@id/cv_filter_risk"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_marginEnd="4dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/sp_date"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_spinner"
+                android:spinnerMode="dropdown" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tv_filter_risk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="32dp"
+            android:text="RISK ASSESSMENT"/>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_filter_risk"
+            app:layout_constraintTop_toTopOf="@id/tv_filter_risk"
+            app:layout_constraintBottom_toBottomOf="@id/tv_filter_risk"
+            app:layout_constraintStart_toEndOf="@id/tv_filter_risk"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="0dp"
+            android:layout_margin="4dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="1dp">
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/sp_risk"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_spinner"
+                android:spinnerMode="dropdown" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tv_from_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/cv_filter_search"
+            app:layout_constraintStart_toStartOf="@id/tv_filter_risk"
+            android:layout_marginTop="32dp"
+            android:layout_marginStart="16dp"
+            android:text="From: "/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/filter_start_date_til"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:hint="Start Date"
+            android:singleLine="true"
+            app:boxStrokeColor="@color/dialog_add"
+            app:helperText="Required"
+            app:hintTextColor="@color/dialog_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_from_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_from_title"
+            app:layout_constraintStart_toEndOf="@id/tv_from_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/filter_start_date_tiet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="datetime"
+                app:helperTextEnabled="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_to_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_from_title"
+            app:layout_constraintStart_toStartOf="@id/tv_from_title"
+            android:layout_marginTop="72dp"
+            android:layout_marginStart="16dp"
+            android:text="To: "/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/filter_due_date_til"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:hint="Due Date"
+            android:singleLine="true"
+            app:boxStrokeColor="@color/dialog_add"
+            app:helperText="Required"
+            app:hintTextColor="@color/dialog_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_to_title"
+            app:layout_constraintTop_toTopOf="@id/tv_to_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_to_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/filter_due_date_tiet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="datetime"
+                app:helperTextEnabled="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/filter_due_date_til"
+            app:layout_constraintTop_toBottomOf="@id/filter_due_date_til">
+
+            <Button
+                android:id="@+id/filter_cancel_btn"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CANCEL"
+                android:textColor="@color/dialog_add" />
+
+            <Button
+                android:id="@+id/filter_confirm_btn"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OK"
+                android:textColor="@color/dialog_add" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

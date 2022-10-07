@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    <solid android:color="@color/spinner_color" />-->
+<!--    <corners-->
+<!--        android:radius="10dp"/>-->
+<!--    <stroke-->
+<!--        android:width="3dp" android:color="@color/border" />-->
+<!--    <padding-->
+<!--        android:bottom="0dp"-->
+<!--        android:left="0dp"-->
+<!--        android:right="0dp"-->
+<!--        android:top="0dp" />-->
+
+
+<!--</shape>-->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <solid android:color="@color/spinner_color" />
+            <corners
+                android:radius="5dp"/>
+            <stroke
+                android:width="3dp" android:color="@color/spinner_color" />
+            <padding
+                android:bottom="0dp"
+                android:left="0dp"
+                android:right="10dp"
+                android:top="0dp" />
+
+
+        </shape>
+    </item>
+
+    <item android:drawable="@drawable/ic_baseline_keyboard_arrow_down_filter_24" android:gravity="center|end">
+
+    </item>
+</layer-list>

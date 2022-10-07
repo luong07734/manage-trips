@@ -22,7 +22,6 @@ public class TripListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private Context context;
     private ArrayList<Trip> tripList;
 
-
     public TripListAdapter(Context _context, ArrayList<Trip> _tripList){
         this.tripList = _tripList;
         this.context = _context;

@@ -10,12 +10,13 @@
     <ImageView
         android:id="@+id/iv_background_image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:alpha=".5"
         android:src="@drawable/img_no_trip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/cv_search"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/tv_header"
@@ -88,7 +89,7 @@
         android:id="@+id/tv_no_trip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="40dp"
         android:fontFamily="@font/nunito_variablefont_wght"
         android:text="No trips have been recorded. Add one !"
         android:textColor="@color/white"
@@ -99,12 +100,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trip_list_rv"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/add_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

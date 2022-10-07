@@ -151,7 +151,7 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 tietComment.setText(selectedExpense.getComment());
 
                 Calendar calendar = Calendar.getInstance();
-                String dateFormat = "dd/MM/yyyy";
+                String dateFormat = "MM/dd/yyyy";
                 String timeFormat = "HH:mm";
 
                 DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
