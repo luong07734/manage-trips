@@ -13,10 +13,11 @@
         android:layout_height="0dp"
         android:alpha=".5"
         android:src="@drawable/img_no_trip"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cv_search"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tv_header"
@@ -25,7 +26,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:fontFamily="@font/nunito_variablefont_wght"
-        android:text="Trips"
+        android:text="@string/trips"
         android:textColor="@color/white"
         android:textSize="40sp"
         android:textStyle="bold"
@@ -34,16 +35,16 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_search"
-        android:layout_marginTop="4dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="4dp"
+        app:cardBackgroundColor="@color/recycler_background"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_header"
         app:strokeColor="@color/background"
-        app:cardBackgroundColor="@color/recycler_background"
         app:strokeWidth="1dp">
 
 
@@ -53,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:inputType="text"
-            app:queryHint="Search trips"
+            app:queryHint="@string/search_by_trip_name"
 
             />
 
@@ -73,16 +74,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:drawableLeft="@drawable/ic_baseline_filter_list_24"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:text="Add filter"
+        android:text="@string/add_filter"
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/cv_search"
+        app:drawableStartCompat="@drawable/ic_baseline_filter_list_24"
         app:layout_constraintEnd_toEndOf="@id/cv_search"
-/>
-
-
+        app:layout_constraintTop_toBottomOf="@id/cv_search" />
 
 
     <TextView
@@ -91,7 +89,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:fontFamily="@font/nunito_variablefont_wght"
-        android:text="No trips have been recorded. Add one !"
+        android:text="@string/no_trips_have_been_recorded_add_one"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/add_btn"
@@ -100,13 +98,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/trip_list_rv"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toTopOf="@id/add_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +122,8 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tv_delete_all"
@@ -132,7 +131,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/nunito_variablefont_wght"
-        android:text="Delete All"
+        android:text="@string/delete_all"
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/trip_list_rv"

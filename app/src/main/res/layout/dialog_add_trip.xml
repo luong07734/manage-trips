@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="ADD A TRIP"
+            android:text="@string/add_a_trip"
             android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +45,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Name"
+                android:hint="@string/name"
                 app:boxStrokeColor="@color/dialog_add"
                 app:helperText="Required"
                 app:hintTextColor="@color/dialog_add"
@@ -68,7 +68,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Destination"
+                android:hint="@string/destination"
                 app:boxStrokeColor="@color/dialog_add"
                 app:helperText="Required"
                 app:hintTextColor="@color/dialog_add"
@@ -92,7 +92,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Date"
+                android:hint="@string/date"
                 android:singleLine="true"
                 app:boxStrokeColor="@color/dialog_add"
                 app:helperText="Required"
@@ -121,7 +121,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:hint="Description"
+                android:hint="@string/description"
                 android:singleLine="true"
                 app:boxStrokeColor="@color/dialog_add"
                 app:helperText="Optional"
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Require risk assessment?"
+                android:text="@string/require_risk_assessment"
                 app:layout_constraintStart_toStartOf="@+id/trip_description_til"
                 app:layout_constraintTop_toBottomOf="@+id/trip_description_til" />
 
@@ -161,7 +161,7 @@
                     android:layout_height="match_parent"
                     android:buttonTint="@color/dialog_add"
                     android:padding="8dp"
-                    android:text="Yes" />
+                    android:text="@string/yes" />
 
                 <RadioButton
                     android:id="@+id/radio_button_no"
@@ -169,7 +169,7 @@
                     android:layout_height="match_parent"
                     android:buttonTint="@color/dialog_add"
                     android:padding="8dp"
-                    android:text="No" />
+                    android:text="@string/no" />
             </RadioGroup>
 
             <LinearLayout
@@ -185,7 +185,7 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CANCEL"
+                    android:text="@string/cancel"
                     android:textColor="@color/dialog_add" />
 
                 <Button
@@ -193,7 +193,7 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ADD"
+                    android:text="@string/add"
                     android:textColor="@color/dialog_add" />
 
             </LinearLayout>

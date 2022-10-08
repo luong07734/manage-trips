@@ -14,14 +14,15 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_baseline_arrow_back_ios_new_24"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tv_trip_info_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/nunito_variablefont_wght"
-        android:text="Trip Info"
+        android:text="@string/trip_info"
         android:textColor="@color/white"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="@id/back_btn"
@@ -35,11 +36,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:drawableLeft="@drawable/ic_baseline_subtitles_24"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:text="TRIP NAME"
+        android:text="@string/trip_name"
         android:textColor="@color/white"
+        app:drawableLeftCompat="@drawable/ic_baseline_subtitles_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_trip_info_title" />
 
@@ -63,11 +64,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:drawableLeft="@drawable/ic_baseline_place_24"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:text="DESTINATION"
+        android:text="@string/destination_cap"
         android:textColor="@color/white"
+        app:drawableLeftCompat="@drawable/ic_baseline_place_24"
         app:layout_constraintStart_toStartOf="@id/tv_name_title"
         app:layout_constraintTop_toBottomOf="@id/tv_name_title" />
 
@@ -90,11 +91,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:drawableLeft="@drawable/ic_baseline_calendar_month_24"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:text="DATE"
+        android:text="@string/date_cap"
         android:textColor="@color/white"
+        app:drawableLeftCompat="@drawable/ic_baseline_calendar_month_24"
         app:layout_constraintStart_toStartOf="@id/tv_destination_title"
         app:layout_constraintTop_toBottomOf="@id/tv_destination_info" />
 
@@ -117,15 +118,15 @@
         android:id="@+id/tv_risk_assessment_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_baseline_assessment_24"
+        android:layout_marginStart="16dp"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:text="RISK ASSESSMENT"
+        android:text="@string/risk_assessment_cap"
         android:textColor="@color/white"
-        android:layout_marginStart="16dp"
+        app:drawableLeftCompat="@drawable/ic_baseline_assessment_24"
+        app:layout_constraintBottom_toBottomOf="@id/tv_date_title"
         app:layout_constraintStart_toEndOf="@id/tv_date_info"
-        app:layout_constraintTop_toTopOf="@id/tv_date_title"
-        app:layout_constraintBottom_toBottomOf="@id/tv_date_title"/>
+        app:layout_constraintTop_toTopOf="@id/tv_date_title" />
 
     <TextView
         android:id="@+id/tv_risk_assessment_info"
@@ -147,11 +148,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:drawableLeft="@drawable/ic_baseline_description_24"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:text="DESCRIPTION"
+        android:text="@string/description_cap"
         android:textColor="@color/white"
+        app:drawableLeftCompat="@drawable/ic_baseline_description_24"
         app:layout_constraintStart_toStartOf="@id/tv_date_title"
         app:layout_constraintTop_toBottomOf="@id/tv_date_title" />
 
@@ -175,23 +176,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Expense"
         android:fontFamily="@font/nunito_variablefont_wght"
+        android:text="@string/expense"
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_description_info"  />
+        app:layout_constraintTop_toBottomOf="@id/tv_description_info" />
 
     <TextView
         android:id="@+id/expense_add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:drawableLeft="@drawable/ic_baseline_add_24"
         android:drawablePadding="4dp"
         android:gravity="center_vertical"
-        android:text="Add an expense"
+        android:text="@string/add_an_expense_no_cap"
         android:textColor="@color/white"
+        app:drawableLeftCompat="@drawable/ic_baseline_add_24"
         app:layout_constraintBottom_toBottomOf="@id/tv_expense_title"
         app:layout_constraintEnd_toEndOf="parent" />
 

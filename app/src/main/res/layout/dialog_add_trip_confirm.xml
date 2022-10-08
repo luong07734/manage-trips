@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
->
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:id="@+id/cl_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dialog_add">
+        android:background="@color/dialog_add"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="CONFIRM"
+            android:text="@string/confirm"
             android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -31,125 +29,146 @@
 
 
     <LinearLayout
-        android:padding="16dp"
         android:id="@+id/lo_confirm_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/cl_title"
+        android:orientation="vertical"
+        android:padding="16dp"
         app:layout_constraintStart_toStartOf="@id/cl_title"
-        android:orientation="vertical">
+        app:layout_constraintTop_toBottomOf="@id/cl_title">
+
         <LinearLayout
-            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="4dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/lora_variablefont_wght"
+                android:text="@string/confirm_name"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="Name: "/>
+                android:textStyle="bold" />
+
             <TextView
-                android:fontFamily="@font/lora_variablefont_wght"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:id="@+id/tv_confirm_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Da Nang Trip"/>
+                android:fontFamily="@font/lora_variablefont_wght"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Da Nang Trip" />
 
         </LinearLayout>
+
         <LinearLayout
-            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="4dp">
+
             <TextView
-                android:fontFamily="@font/lora_variablefont_wght"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Destination: "/>
-            <TextView
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/lora_variablefont_wght"
+                android:text="@string/confirm_destination"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/tv_confirm_destination"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Da Nang Trip"/>
+                android:fontFamily="@font/lora_variablefont_wght"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Da Nang Trip" />
 
         </LinearLayout>
+
         <LinearLayout
-            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="4dp">
+
             <TextView
-                android:fontFamily="@font/lora_variablefont_wght"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date: "/>
-            <TextView
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/lora_variablefont_wght"
+                android:text="@string/confirm_date"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/tv_confirm_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Da Nang Trip"/>
+                android:fontFamily="@font/lora_variablefont_wght"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Da Nang Trip" />
 
         </LinearLayout>
+
         <LinearLayout
-            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="4dp">
+
             <TextView
-                android:fontFamily="@font/lora_variablefont_wght"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Description: "/>
-            <TextView
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/lora_variablefont_wght"
+                android:text="@string/confirm_description"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/tv_confirm_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Da Nang Trip"/>
+                android:fontFamily="@font/lora_variablefont_wght"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Da Nang Trip" />
 
         </LinearLayout>
+
         <LinearLayout
-            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="4dp">
+
             <TextView
-                android:fontFamily="@font/lora_variablefont_wght"
-                android:textSize="16sp"
-                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Risk assessment: "/>
-            <TextView
+                android:layout_marginEnd="8dp"
                 android:fontFamily="@font/lora_variablefont_wght"
+                android:text="@string/confirm_risk_assessment"
                 android:textSize="16sp"
-                android:textStyle="bold"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/tv_confirm_risk_assessment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Da Nang Trip"/>
+                android:fontFamily="@font/lora_variablefont_wght"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Da Nang Trip" />
 
         </LinearLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -163,20 +182,18 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/dialog_add"
-            android:text="CANCEL" />
+            android:text="@string/cancel"
+            android:textColor="@color/dialog_add" />
 
         <Button
             android:id="@+id/btn_ok_confirm"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/dialog_add"
-            android:text="OK" />
+            android:text="@string/ok"
+            android:textColor="@color/dialog_add" />
 
     </LinearLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

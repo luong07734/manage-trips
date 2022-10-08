@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "type text not null, amount real not null, time text not null, comments text, trip_id integer )";
         String[] statements = new String[]{sql_create_trip_table, sql_create_expense_table};
 
-        for(String sql: statements){
+        for (String sql : statements) {
             sqLiteDatabase.execSQL(sql);
         }
 

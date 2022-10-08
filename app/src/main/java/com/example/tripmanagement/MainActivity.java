@@ -12,7 +12,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -44,13 +43,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
-
     RecyclerView rvTrip;
     TripListAdapter tripListAdapter;
-    ArrayList<Trip> tripList = new ArrayList<>();
     FloatingActionButton btnAdd;
     RecyclerTouchListener touchListener;
     TextView tvDeleteAll;
@@ -59,27 +57,37 @@ public class MainActivity extends AppCompatActivity {
     SearchView svSearch;
     ImageView btnFilter;
     TextView tvFilter;
-    String format = "MM/dd/yyyy";
 
-    String query = "";
-    ArrayList<Trip> filteredTripList = new ArrayList<>();
+    // date format
+    static final String format = "MM/dd/yyyy";
+
+
+    String query = ""; // search query
+    ArrayList<Trip> tripList = new ArrayList<>(); // list of trips
+    ArrayList<Trip> filteredTripList = new ArrayList<>(); // list of filtered results
+
+    // filter related variables
     String[] filterDateItems = new String[]{"All time", "Past 7 days", "Past 30 days", "Custom time period"};
     String[] filterRiskItems = new String[]{"All", "Yes", "No",};
     int filterRiskAssessment = 0;
     int filterDate = 0;
     String customStartDate = "";
     String customDueDate = "";
+    int searchBy = 0; // search by 0: trip name, 1: trip destination
 
-    int searchBy = 0; // trip name
 
-
+    /**
+     * onCreate function
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
         // find view by id
         rvTrip = findViewById(R.id.trip_list_rv);
         btnAdd = findViewById(R.id.add_btn);
@@ -100,30 +108,19 @@ public class MainActivity extends AppCompatActivity {
         rvTrip.setLayoutManager(linearLayoutManager);
 
         filterList(query);
-        // add button onclick
-        btnAdd.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                showAddDialog();
-            }
-        });
+        // add button onclick
+        btnAdd.setOnClickListener(view -> showAddDialog());
 
         // swipe action
         touchListener = new RecyclerTouchListener(this, rvTrip);
         swipeToDisplayMenu();
         rvTrip.addOnItemTouchListener(touchListener);
 
-        // delete all
-        tvDeleteAll.setOnClickListener(new View.OnClickListener() {
+        // delete all button onclick
+        tvDeleteAll.setOnClickListener(view -> showDeleteAllDialog());
 
-            @Override
-            public void onClick(View view) {
-                showDeleteAllDialog();
-            }
-        });
-
-        // search
+        // search settings
         svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -138,25 +135,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // filter
-        btnFilter.setOnClickListener(new View.OnClickListener() {
+        // filter button in search bar  onclick
+        btnFilter.setOnClickListener(view -> chooseSearchType());
 
-            @Override
-            public void onClick(View view) {
-                chooseSearchType();
-            }
-        });
-
-        tvFilter.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                showFilterDialog();
-            }
-        });
+        // add filter onclick
+        tvFilter.setOnClickListener(view -> showFilterDialog());
 
     }
 
+    /**
+     * This function shows filter dialog when clicking "Add filter"
+     */
     private void showFilterDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -165,22 +154,19 @@ public class MainActivity extends AppCompatActivity {
         Dialog dialog = builder.create();
         dialog.show();
 
-
+        // find view by id
         AppCompatSpinner spnDate = view.findViewById(R.id.sp_date);
         AppCompatSpinner spnRiskAssessment = view.findViewById(R.id.sp_risk);
         Button btnCancel = view.findViewById(R.id.filter_cancel_btn);
         Button btnOk = view.findViewById(R.id.filter_confirm_btn);
-
         TextView tvToTitle = view.findViewById(R.id.tv_to_title);
         TextView tvFromTitle = view.findViewById(R.id.tv_from_title);
         TextInputLayout startLayout = view.findViewById(R.id.filter_start_date_til);
         TextInputLayout endLayout = view.findViewById(R.id.filter_due_date_til);
-
-
         TextInputEditText tietStartDate = view.findViewById(R.id.filter_start_date_tiet);
         TextInputEditText tietDueDate = view.findViewById(R.id.filter_due_date_tiet);
 
-
+        // hide date picker text fields
         tvToTitle.setVisibility(View.GONE);
         tvFromTitle.setVisibility(View.GONE);
         startLayout.setVisibility(View.GONE);
@@ -188,11 +174,13 @@ public class MainActivity extends AppCompatActivity {
         tietStartDate.setText(customStartDate);
         tietDueDate.setText(customDueDate);
 
-
+        // temporary variable to store user options
         final int[] date = {filterDate};
         final int[] risk = {filterRiskAssessment};
         final String[] period = new String[]{customStartDate, customDueDate};
-        ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, filterDateItems);
+
+        // setting adapter for date spinner
+        ArrayAdapter<String> dateAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, filterDateItems);
         spnDate.setAdapter(dateAdapter);
         spnDate.setSelection(filterDate);
         spnDate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -201,12 +189,11 @@ public class MainActivity extends AppCompatActivity {
                 int pos = adapterView.getSelectedItemPosition();
                 date[0] = pos;
                 if (pos == 3) {
-//                    showDatePickerDialog(period);
+                    // if date option is custom period, show text fields
                     tvToTitle.setVisibility(View.VISIBLE);
                     tvFromTitle.setVisibility(View.VISIBLE);
                     startLayout.setVisibility(View.VISIBLE);
                     endLayout.setVisibility(View.VISIBLE);
-
 
                     Calendar calendar = Calendar.getInstance();
                     DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -222,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                         private void updateCalendarOnTextField() {
                             SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
                             tietStartDate.setText(sdf.format(calendar.getTime()));
-                            period[0] = tietStartDate.getText().toString();
+                            period[0] = Objects.requireNonNull(tietStartDate.getText()).toString();
                         }
                     };
 
@@ -240,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
                         private void updateCalendarOnTextField() {
                             SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
                             tietDueDate.setText(sdf.format(calendar.getTime()));
-                            period[1] = tietDueDate.getText().toString();
+                            period[1] = Objects.requireNonNull(tietDueDate.getText()).toString();
                         }
                     };
 
@@ -273,12 +260,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                // do nothing
             }
 
         });
 
-        ArrayAdapter<String> riskAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, filterRiskItems);
+        // setting adapter for risk assessment spinner
+        ArrayAdapter<String> riskAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, filterRiskItems);
         spnRiskAssessment.setAdapter(riskAdapter);
         spnRiskAssessment.setSelection(filterRiskAssessment);
         spnRiskAssessment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -295,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         btnCancel.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -310,13 +297,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (date[0] != 3) {
+                    // reset start date and due date when option is not custom time period
                     filterDate = date[0];
                     filterRiskAssessment = risk[0];
                     customStartDate = "";
                     customDueDate = "";
                     filterList(query);
                     dialog.cancel();
-                } else if (!tietStartDate.getText().toString().isEmpty() && !tietStartDate.getText().toString().isEmpty()) {
+                } else if (!Objects.requireNonNull(tietStartDate.getText()).toString().isEmpty() && !Objects.requireNonNull(tietDueDate.getText()).toString().isEmpty()) {
                     filterDate = date[0];
                     filterRiskAssessment = risk[0];
                     customStartDate = period[0];
@@ -324,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
                     filterList(query);
                     dialog.cancel();
                 } else {
-                    Toast.makeText(MainActivity.this, "Please fill all the required fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.fill_all_the_required_fields), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -332,13 +320,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * show dialog to pick search type when click down arrow button
+     */
     private void chooseSearchType() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Search by");
+        builder.setTitle(R.string.search_by);
 
         // add a radio button list
         String[] options = {"Trip Name", "Trip Destination"};
+
+        // temporary variable to store user options
         final int[] choice = {0};
+
         builder.setSingleChoiceItems(options, searchBy, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -355,9 +349,9 @@ public class MainActivity extends AppCompatActivity {
                 // user clicked OK
                 searchBy = choice[0];
                 if (searchBy == 0) {
-                    svSearch.setQueryHint("Search by trip name");
+                    svSearch.setQueryHint(getString(R.string.search_by_trip_name));
                 } else {
-                    svSearch.setQueryHint("Search by trip destination");
+                    svSearch.setQueryHint(getString(R.string.search_by_trip_destination));
                 }
                 filterList(query);
                 dialog.cancel();
@@ -371,74 +365,89 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * function to check if a trip's date match start date and due date in filter
+     */
     private boolean filterByDate(Trip trip) {
+        // current date
         Date currentDate = Calendar.getInstance().getTime();
 
+        // 7 previous date
         Calendar c = Calendar.getInstance();
         c.setTime(currentDate);
         c.add(Calendar.DAY_OF_YEAR, -7);
         Date sevenPreviousDate = c.getTime();
 
+        // 30 previous date
         Calendar c1 = Calendar.getInstance();
         c1.setTime(currentDate);
         c1.add(Calendar.DAY_OF_YEAR, -30);
         Date thirtyPreviousDate = c1.getTime();
 
+        // trip date
         Date tripDate = currentDate;
         try {
-            tripDate = new SimpleDateFormat(format).parse(trip.getDate());
+            tripDate = new SimpleDateFormat(format, Locale.US).parse(trip.getDate());
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         if (filterDate == 1) {
+            // past 7 days
             return !sevenPreviousDate.after(tripDate) && !currentDate.before(tripDate);
         } else if (filterDate == 2) {
+            // past 30 days
             return !thirtyPreviousDate.after(tripDate) && !currentDate.before(tripDate);
         } else if (filterDate == 3) {
+            // custom period
             Date startDate = currentDate;
             Date dueDate = currentDate;
             try {
-                startDate = new SimpleDateFormat(format).parse(customStartDate);
-                dueDate = new SimpleDateFormat(format).parse(customDueDate);
+                startDate = new SimpleDateFormat(format, Locale.US).parse(customStartDate);
+                dueDate = new SimpleDateFormat(format, Locale.US).parse(customDueDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            return !startDate.after(tripDate) && !dueDate.before(tripDate);
+            return !Objects.requireNonNull(startDate).after(tripDate) && !Objects.requireNonNull(dueDate).before(tripDate);
         } else {
+            // all date
             return true;
         }
     }
 
+
+    /**
+     * function to check if a trip's risk assessment match filter
+     */
     private boolean filterByRiskAssessment(Trip trip) {
         if (filterRiskAssessment == 0) {
+            // all
             return true;
         } else {
             return filterRiskItems[filterRiskAssessment].equals(trip.getRiskAssessment());
         }
     }
 
+
+    /**
+     * function to filter base of date, risk assessment, and search type
+     */
     private void filterList(String text) {
         filteredTripList.clear();
-        if (searchBy == 0) {
-            for (Trip trip : tripList) {
-                if (trip.getTripName().toLowerCase().contains(text.toLowerCase())) {
-                    if (filterByRiskAssessment(trip)) {
-                        if (filterByDate(trip)) {
+        for (Trip trip : tripList) {
+            if (filterByRiskAssessment(trip)) {
+                if (filterByDate(trip)) {
+                    if (searchBy == 0) {
+                        // search by trip name
+                        if (trip.getTripName().toLowerCase().contains(text.toLowerCase())) {
+                            filteredTripList.add(trip);
+                        }
+                    } else {
+                        // search by trip destination
+                        if (trip.getDestination().toLowerCase().contains(text.toLowerCase())) {
                             filteredTripList.add(trip);
                         }
 
-                    }
-
-                }
-            }
-        } else {
-            for (Trip trip : tripList) {
-                if (trip.getDestination().toLowerCase().contains(text.toLowerCase())) {
-                    if (filterByRiskAssessment(trip)) {
-                        if (filterByDate(trip)) {
-                            filteredTripList.add(trip);
-                        }
                     }
                 }
             }
@@ -446,10 +455,14 @@ public class MainActivity extends AppCompatActivity {
 
         tripListAdapter.setFilteredList(filteredTripList);
         if (filteredTripList.isEmpty()) {
+            // TODO: show empty
             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * show add dialog when clicking add floating button
+     */
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -457,13 +470,12 @@ public class MainActivity extends AppCompatActivity {
         builder.setView(view);
         Dialog dialog = builder.create();
         dialog.show();
-        // calendar settings
 
+        // find view by id
         TextInputEditText tietName = view.findViewById(R.id.trip_name_tiet);
         TextInputEditText tietDestination = view.findViewById(R.id.trip_destination_tiet);
         TextInputEditText tietDescription = view.findViewById(R.id.trip_description_tiet);
         TextInputEditText tietDate = view.findViewById(R.id.trip_date_tiet);
-        RadioButton rbYes = view.findViewById(R.id.radio_button_yes);
         RadioButton rbNo = view.findViewById(R.id.radio_button_no);
         Button btnCancel = view.findViewById(R.id.cancel_btn);
         Button btnAdd = view.findViewById(R.id.add_trip_btn);
@@ -509,19 +521,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                String name = tietName.getText().toString();
-                String destination = tietDestination.getText().toString();
-                String date = tietDate.getText().toString();
-                String description = tietDescription.getText().toString();
-                String riskAssessment = "Yes";
+                String name = Objects.requireNonNull(tietName.getText()).toString();
+                String destination = Objects.requireNonNull(tietDestination.getText()).toString();
+                String date = Objects.requireNonNull(tietDate.getText()).toString();
+                String description = Objects.requireNonNull(tietDescription.getText()).toString();
+                String riskAssessment = getResources().getString(R.string.yes);
                 if (rbNo.isChecked()) {
-                    riskAssessment = "No";
+                    riskAssessment = getResources().getString(R.string.no);
                 }
 
                 if (allRequiredFieldsFilled(name, destination, date)) {
                     showConfirmationDialog(dialog, name, destination, date, riskAssessment, description);
                 } else {
-                    Toast.makeText(MainActivity.this, "Please fill all the required fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.fill_all_the_required_fields), Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -530,6 +542,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * show confirm when adding a trip
+     */
     private void showConfirmationDialog(Dialog parentDialog, String name, String destination, String date, String riskAssessment, String description) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -565,7 +580,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (TripDao.insert(MainActivity.this, name, destination, date, riskAssessment, description)) {
-                    Toast.makeText(MainActivity.this, "Add new trip successfully!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.add_trip_successfully), Toast.LENGTH_SHORT).show();
                     tripList.clear();
                     tripList.addAll(TripDao.getAll(MainActivity.this));
                     Collections.reverse(tripList);
@@ -575,17 +590,24 @@ public class MainActivity extends AppCompatActivity {
                     secondDialog.cancel();
                     parentDialog.cancel();
                 } else {
-                    Toast.makeText(MainActivity.this, "Add new trip failed!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.add_trip_failed), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    /**
+     * this function checks if the user enter all the required fields
+     */
     private boolean allRequiredFieldsFilled(String name, String destination, String date) {
         return !name.isEmpty() && !destination.isEmpty() && !date.isEmpty();
 
     }
 
+
+    /**
+     * this function show edit dialog to edit a trip
+     */
     private void showEditDialog(Trip selectedTrip) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -654,17 +676,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if (allRequiredFieldsFilled(tietName.getText().toString(), tietDestination.getText().toString(), tietDate.getText().toString())) {
+                if (allRequiredFieldsFilled(Objects.requireNonNull(tietName.getText()).toString(), Objects.requireNonNull(tietDestination.getText()).toString(), Objects.requireNonNull(tietDate.getText()).toString())) {
                     selectedTrip.setTripName(tietName.getText().toString());
                     selectedTrip.setDestination(tietDestination.getText().toString());
                     selectedTrip.setDate(tietDate.getText().toString());
-                    selectedTrip.setDescription(tietDescription.getText().toString());
-                    selectedTrip.setRiskAssessment("Yes");
+                    selectedTrip.setDescription(Objects.requireNonNull(tietDescription.getText()).toString());
+                    selectedTrip.setRiskAssessment(getResources().getString(R.string.yes));
                     if (rbNo.isChecked()) {
-                        selectedTrip.setRiskAssessment("No");
+                        selectedTrip.setRiskAssessment(getResources().getString(R.string.no));
                     }
                     if (TripDao.update(MainActivity.this, selectedTrip)) {
-                        Toast.makeText(MainActivity.this, "Update trip successfully!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getResources().getString(R.string.update_trip_successfully), Toast.LENGTH_SHORT).show();
                         tripList.clear();
                         tripList.addAll(TripDao.getAll(MainActivity.this));
                         Collections.reverse(tripList);
@@ -673,10 +695,10 @@ public class MainActivity extends AppCompatActivity {
                         displaySuitableViewsWhenListIsEmptyAndViceVersa();
                         dialog.cancel();
                     } else {
-                        Toast.makeText(MainActivity.this, "Update trip failed!!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getResources().getString(R.string.update_trip_failed), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Please fill all the required fields", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.fill_all_the_required_fields), Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -685,6 +707,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * this function setup swipe to delete and edit in trip list
+     */
     private void swipeToDisplayMenu() {
         touchListener
                 .setClickable(new RecyclerTouchListener.OnRowClickListener() {
@@ -707,96 +733,87 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .setSwipeOptionViews(R.id.delete_task, R.id.edit_task)
-                .setSwipeable(R.id.rowFG, R.id.rowBG, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
-                    @Override
-                    public void onSwipeOptionClicked(int viewID, int position) {
-                        Trip selectedTrip = filteredTripList.get(position);
-                        Log.i("test1", filteredTripList.toString());
-                        switch (viewID) {
-                            case R.id.delete_task:
-                                AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
-                                        MainActivity.this);
-                                // Setting Dialog Title
-                                alertDialogDelete.setTitle("Delete the trip");
-                                alertDialogDelete.setMessage("Are you sure you want to delete this trip?");
-                                // Setting OK Button
-                                alertDialogDelete.setPositiveButton("YES",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                if (TripDao.delete(MainActivity.this, selectedTrip.getTripId())) {
-                                                    // delete expense
-                                                    ExpenseDao.deleteExpensesOfATrip(MainActivity.this, selectedTrip.getTripId());
-                                                    Toast.makeText(getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
-                                                    tripList.clear();
-                                                    tripList.addAll(TripDao.getAll(MainActivity.this));
-                                                    Collections.reverse(tripList);
-                                                    tripListAdapter.notifyDataSetChanged();
-                                                    filterList(query);
-                                                    displaySuitableViewsWhenListIsEmptyAndViceVersa();
+                .setSwipeable(R.id.rowFG, R.id.rowBG, (viewID, position) -> {
+                    Trip selectedTrip = filteredTripList.get(position);
+                    switch (viewID) {
+                        case R.id.delete_task:
+                            AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
+                                    MainActivity.this);
+                            // Setting Dialog Title
+                            alertDialogDelete.setTitle(R.string.delete_the_trip);
+                            alertDialogDelete.setMessage(R.string.confirm_delete_the_trip);
+                            // Setting OK Button
+                            alertDialogDelete.setPositiveButton("YES",
+                                    (dialog, which) -> {
+                                        if (TripDao.delete(MainActivity.this, selectedTrip.getTripId())) {
+                                            // delete expense
+                                            ExpenseDao.deleteExpensesOfATrip(MainActivity.this, selectedTrip.getTripId());
+                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.delete_trip_successfully), Toast.LENGTH_SHORT).show();
+                                            tripList.clear();
+                                            tripList.addAll(TripDao.getAll(MainActivity.this));
+                                            Collections.reverse(tripList);
+                                            tripListAdapter.notifyDataSetChanged();
+                                            filterList(query);
+                                            displaySuitableViewsWhenListIsEmptyAndViceVersa();
 
-                                                } else {
-                                                    Toast.makeText(getApplicationContext(), "Delete failed", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                // Setting Negative "NO" Btn
-                                alertDialogDelete.setNegativeButton("NO",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.cancel();
-                                            }
-                                        });
-                                // Showing Alert Dialog
-                                alertDialogDelete.show();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.delete_trip_failed), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                            // Setting Negative "NO" Btn
+                            alertDialogDelete.setNegativeButton("NO",
+                                    (dialog, which) -> dialog.cancel());
+                            // Showing Alert Dialog
+                            alertDialogDelete.show();
 
-                                break;
-                            case R.id.edit_task:
-                                showEditDialog(selectedTrip);
-                                break;
+                            break;
+                        case R.id.edit_task:
+                            showEditDialog(selectedTrip);
+                            break;
 
-                        }
                     }
                 });
     }
 
+
+    /**
+     * this function show dialog when clicking delete all
+     */
     private void showDeleteAllDialog() {
         AlertDialog.Builder alertDialogDelete = new AlertDialog.Builder(
                 MainActivity.this);
         // Setting Dialog Title
-        alertDialogDelete.setTitle("Delete all the trips");
-        alertDialogDelete.setMessage("Are you sure you want to delete all the trips?");
+        alertDialogDelete.setTitle(R.string.delete_all_trips);
+        alertDialogDelete.setMessage(R.string.confirm_delete_all_trips);
         // Setting OK Button
         alertDialogDelete.setPositiveButton("YES",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (TripDao.deleteAll(MainActivity.this)) {
-                            // delete all expense
-                            ExpenseDao.deleteAll(MainActivity.this);
-                            Toast.makeText(getApplicationContext(), "Delete successfully", Toast.LENGTH_SHORT).show();
-                            tripList.clear();
-                            tripList.addAll(TripDao.getAll(MainActivity.this));
-                            Collections.reverse(tripList);
-                            tripListAdapter.notifyDataSetChanged();
-                            filterList(query);
-                            displaySuitableViewsWhenListIsEmptyAndViceVersa();
+                (dialog, which) -> {
+                    if (TripDao.deleteAll(MainActivity.this)) {
+                        // delete all expense
+                        ExpenseDao.deleteAll(MainActivity.this);
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.delete_trip_successfully), Toast.LENGTH_SHORT).show();
+                        tripList.clear();
+                        tripList.addAll(TripDao.getAll(MainActivity.this));
+                        Collections.reverse(tripList);
+                        tripListAdapter.notifyDataSetChanged();
+                        filterList(query);
+                        displaySuitableViewsWhenListIsEmptyAndViceVersa();
 
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Delete failed", Toast.LENGTH_SHORT).show();
-                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.delete_trip_failed), Toast.LENGTH_SHORT).show();
                     }
                 });
-// Setting Negative "NO" Btn
+        // Setting Negative "NO" Btn
         alertDialogDelete.setNegativeButton("NO",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                (dialog, which) -> dialog.cancel());
 
-// Showing Alert Dialog
+        // Showing Alert Dialog
         alertDialogDelete.show();
     }
 
+    /**
+     * display background image when no trips
+     */
     private void displaySuitableViewsWhenListIsEmptyAndViceVersa() {
         if (tripList.isEmpty()) {
             tvNoTrip.setVisibility(View.VISIBLE);

@@ -9,7 +9,6 @@ import com.example.tripmanagement.DatabaseHelper;
 import com.example.tripmanagement.model.Trip;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class TripDao {
 
@@ -38,7 +37,7 @@ public class TripDao {
     }
 
     // insert a trip
-    public static boolean insert(Context context, String name, String destination, String date, String riskAssessment, String description){
+    public static boolean insert(Context context, String name, String destination, String date, String riskAssessment, String description) {
         DatabaseHelper helper = new DatabaseHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -48,19 +47,19 @@ public class TripDao {
         values.put("risk_assessment", riskAssessment);
         values.put("description", description);
         long newRow = database.insert("trips", null, values);
-        return (newRow >0);
+        return (newRow > 0);
     }
 
     // delete a trip
-    public static boolean delete(Context context, int tripId){
+    public static boolean delete(Context context, int tripId) {
         DatabaseHelper helper = new DatabaseHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
-        int row = database.delete("trips", "trip_id=?", new String[]{tripId+""});
-        return (row >0);
+        int row = database.delete("trips", "trip_id=?", new String[]{tripId + ""});
+        return (row > 0);
     }
 
     // update a trip
-    public static boolean update(Context context, Trip trip){
+    public static boolean update(Context context, Trip trip) {
         DatabaseHelper helper = new DatabaseHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -70,14 +69,14 @@ public class TripDao {
         values.put("risk_assessment", trip.getRiskAssessment());
         values.put("description", trip.getDescription());
         int row = database.update("trips", values, "trip_id=?", new String[]{trip.getTripId() + ""});
-        return (row >0);
+        return (row > 0);
     }
 
-    public static boolean deleteAll(Context context){
+    public static boolean deleteAll(Context context) {
         DatabaseHelper helper = new DatabaseHelper(context);
         SQLiteDatabase database = helper.getWritableDatabase();
-        int row = database.delete("trips", null,null);
-        return (row >0);
+        int row = database.delete("trips", null, null);
+        return (row > 0);
     }
 
 }

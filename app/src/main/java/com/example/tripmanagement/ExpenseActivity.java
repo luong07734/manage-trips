@@ -1,11 +1,5 @@
 package com.example.tripmanagement;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -16,17 +10,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.tripmanagement.adapter.ExpenseListAdapter;
-import com.example.tripmanagement.adapter.TripListAdapter;
 import com.example.tripmanagement.dao.ExpenseDao;
-import com.example.tripmanagement.dao.TripDao;
 import com.example.tripmanagement.model.Expense;
-import com.example.tripmanagement.model.Trip;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
@@ -34,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Objects;
 
 public class ExpenseActivity extends AppCompatActivity {
     RecyclerView rvExpense;
@@ -48,11 +45,19 @@ public class ExpenseActivity extends AppCompatActivity {
     TextView tvDescriptionInfo;
     int tripId = 0;
 
+    final static String dateFormat = "MM/dd/yyyy";
+    final static String timeFormat = "HH:mm";
+
+
+    /**
+     * onCreate function
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense);
 
+        // get trip info
         Intent intent = this.getIntent();
         tripId = intent.getIntExtra("trip_id", 0);
         String tripName = intent.getStringExtra("trip_name");
@@ -63,8 +68,11 @@ public class ExpenseActivity extends AppCompatActivity {
 
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
+        // find view by id
         tvAdd = findViewById(R.id.expense_add_btn);
         rvExpense = findViewById(R.id.expense_list_rv);
         btnBack = findViewById(R.id.back_btn);
@@ -77,7 +85,6 @@ public class ExpenseActivity extends AppCompatActivity {
         // recycler view
         expenseList = ExpenseDao.getExpenseList(this, tripId);
         Collections.reverse(expenseList);
-//        displaySuitableViewsWhenListIsEmptyAndViceVersa();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         expenseListAdapter = new ExpenseListAdapter(this, expenseList);
         rvExpense.setLayoutManager(linearLayoutManager);
@@ -90,26 +97,17 @@ public class ExpenseActivity extends AppCompatActivity {
         tvDescriptionInfo.setText(tripDescription);
         tvRiskAssessmentInfo.setText(tripRiskAssessment);
 
+        // add expense on click
+        tvAdd.setOnClickListener(view -> showAddDialog());
 
-        tvAdd.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                showAddDialog();
-            }
-        });
-
-        btnBack.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-
+        // back button onclick
+        btnBack.setOnClickListener(view -> onBackPressed());
 
     }
 
+    /**
+     * This function shows dialog to add an expense
+     */
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -127,8 +125,7 @@ public class ExpenseActivity extends AppCompatActivity {
         Button btnAdd = view.findViewById(R.id.add_expense_btn);
 
         Calendar calendar = Calendar.getInstance();
-        String dateFormat = "MM/dd/yyyy";
-        String timeFormat = "HH:mm";
+
         SimpleDateFormat dateSdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
         tietDate.setText(dateSdf.format(calendar.getTime()));
         SimpleDateFormat timeSdf = new SimpleDateFormat(timeFormat, Locale.getDefault());
@@ -198,11 +195,11 @@ public class ExpenseActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                if (allRequiredFieldsFilled(tietType.getText().toString(), tietAmount.getText().toString())) {
+                if (allRequiredFieldsFilled(Objects.requireNonNull(tietType.getText()).toString(), Objects.requireNonNull(tietAmount.getText()).toString())) {
                     String type = tietType.getText().toString();
-                    Double amount = Double.parseDouble(tietAmount.getText().toString());
-                    String time = tietDate.getText().toString() + " " + tietTime.getText().toString();
-                    String comment = tietComment.getText().toString();
+                    double amount = Double.parseDouble(tietAmount.getText().toString());
+                    String time = Objects.requireNonNull(tietDate.getText()) + " " + Objects.requireNonNull(tietTime.getText());
+                    String comment = Objects.requireNonNull(tietComment.getText()).toString();
 
                     if (ExpenseDao.insert(ExpenseActivity.this, type, amount, time, comment, tripId)) {
                         Toast.makeText(ExpenseActivity.this, "Add new trip successfully!!", Toast.LENGTH_SHORT).show();
@@ -210,7 +207,6 @@ public class ExpenseActivity extends AppCompatActivity {
                         expenseList.addAll(ExpenseDao.getExpenseList(ExpenseActivity.this, tripId));
                         Collections.reverse(expenseList);
                         expenseListAdapter.notifyDataSetChanged();
-//                        displaySuitableViewsWhenListIsEmptyAndViceVersa();
                         dialog.cancel();
 
                     } else {
@@ -219,15 +215,16 @@ public class ExpenseActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(ExpenseActivity.this, "Please fill all the required fields", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
         });
     }
 
+
+    /**
+     * this function checks if the user enter all the required fields
+     */
     private boolean allRequiredFieldsFilled(String type, String amount) {
         return !type.isEmpty() && !amount.isEmpty();
-
     }
 
 
