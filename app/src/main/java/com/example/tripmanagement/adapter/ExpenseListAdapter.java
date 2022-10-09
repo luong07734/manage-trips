@@ -75,7 +75,7 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         Expense expense = expenseList.get(position);
         ViewHolder viewHolder = (ViewHolder) holder;
         viewHolder.txtType.setText(expense.getType());
-        viewHolder.txtAmount.setText(context.getResources().getString(R.string.pound, expense.getAmount()));
+        viewHolder.txtAmount.setText("£ " + expense.getAmount());
         viewHolder.txtTime.setText(expense.getTime());
         viewHolder.txtComment.setText(expense.getComment());
 
