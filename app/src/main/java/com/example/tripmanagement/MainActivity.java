@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     int searchBy = 0; // search by 0: trip name, 1: trip destination
 
     boolean isBackPressed = false;
+    int scrollPosition = 0;
 
     /**
      * onCreate function
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         // restore value if re-entering activity after pressing back button
         LoadIsPressedBack();
-        if(isBackPressed){
+        if (isBackPressed) {
             LoadPreferences();
         }
         isBackPressed = false;
@@ -132,6 +133,9 @@ public class MainActivity extends AppCompatActivity {
         rvTrip.setLayoutManager(linearLayoutManager);
 
         filterList(query);
+
+        // scroll to position
+        linearLayoutManager.scrollToPosition(scrollPosition);
 
         // add button onclick
         btnAdd.setOnClickListener(view -> showAddDialog());
@@ -853,7 +857,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * save preferences when press back
      */
-    private void SavePreferences(){
+    private void SavePreferences() {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("QUERY", query);
@@ -862,13 +866,14 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("START_DATE", customStartDate);
         editor.putString("END_DATE", customDueDate);
         editor.putInt("SEARCH_BY", searchBy);
+        editor.putInt("SCROLL_POSITION", scrollPosition);
         editor.apply();
     }
 
     /**
      * load preferences when enter the activity
      */
-    private void LoadPreferences(){
+    private void LoadPreferences() {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         query = sharedPreferences.getString("QUERY", "");
         filterRiskAssessment = sharedPreferences.getInt("FILTER_RISK", 0);
@@ -876,12 +881,13 @@ public class MainActivity extends AppCompatActivity {
         customStartDate = sharedPreferences.getString("START_DATE", "");
         customDueDate = sharedPreferences.getString("END_DATE", "");
         searchBy = sharedPreferences.getInt("SEARCH_BY", 0);
+        scrollPosition = sharedPreferences.getInt("SCROLL_POSITION", 0);
     }
 
     /**
      * check if back button is pressed to restore filter
      */
-    private void LoadIsPressedBack(){
+    private void LoadIsPressedBack() {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         isBackPressed = sharedPreferences.getBoolean("IS_PRESSED_BACK", false);
     }
@@ -889,7 +895,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * save back pressed state
      */
-    private void SaveIsPressedBack(){
+    private void SaveIsPressedBack() {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("IS_PRESSED_BACK", isBackPressed);
@@ -917,8 +923,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         isBackPressed = true;
+        // save scroll position
+        LinearLayoutManager myLayoutManager = (LinearLayoutManager) rvTrip.getLayoutManager();
+        if (myLayoutManager != null) {
+            scrollPosition = myLayoutManager.findFirstVisibleItemPosition();
+        }
         SavePreferences();
         SaveIsPressedBack();
+
         super.onBackPressed();
     }
 }

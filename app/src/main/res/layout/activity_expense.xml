@@ -70,7 +70,7 @@
         android:textColor="@color/white"
         app:drawableLeftCompat="@drawable/ic_baseline_place_24"
         app:layout_constraintStart_toStartOf="@id/tv_name_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_name_title" />
+        app:layout_constraintTop_toBottomOf="@id/tv_date_title" />
 
     <TextView
         android:id="@+id/tv_destination_info"
@@ -97,7 +97,7 @@
         android:textColor="@color/white"
         app:drawableLeftCompat="@drawable/ic_baseline_calendar_month_24"
         app:layout_constraintStart_toStartOf="@id/tv_destination_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_destination_info" />
+        app:layout_constraintTop_toBottomOf="@id/tv_name_info" />
 
 
     <TextView
@@ -154,7 +154,7 @@
         android:textColor="@color/white"
         app:drawableLeftCompat="@drawable/ic_baseline_description_24"
         app:layout_constraintStart_toStartOf="@id/tv_date_title"
-        app:layout_constraintTop_toBottomOf="@id/tv_date_title" />
+        app:layout_constraintTop_toBottomOf="@id/tv_destination_info" />
 
     <TextView
         android:id="@+id/tv_description_info"
