@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     String customDueDate = "";
     int searchBy = 0; // search by 0: trip name, 1: trip destination
 
+    boolean isBackPressed = false;
 
     /**
      * onCreate function
@@ -85,6 +87,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ActionBar actionBar = getSupportActionBar();
+
+        // restore value if re-entering activity after pressing back button
+        LoadIsPressedBack();
+        if(isBackPressed){
+            LoadPreferences();
+        }
+        isBackPressed = false;
+        SaveIsPressedBack();
+
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            query = savedInstanceState.getString("QUERY");
+            filterRiskAssessment = savedInstanceState.getInt("FILTER_RISK");
+            filterDate = savedInstanceState.getInt("FILTER_DATE");
+            customStartDate = savedInstanceState.getString("START_DATE");
+            customDueDate = savedInstanceState.getString("END_DATE");
+            searchBy = savedInstanceState.getInt("SEARCH_BY");
+
+        }
+
+
         if (actionBar != null) {
             actionBar.hide();
         }
@@ -826,5 +850,76 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * save preferences when press back
+     */
+    private void SavePreferences(){
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("QUERY", query);
+        editor.putInt("FILTER_RISK", filterRiskAssessment);
+        editor.putInt("FILTER_DATE", filterDate);
+        editor.putString("START_DATE", customStartDate);
+        editor.putString("END_DATE", customDueDate);
+        editor.putInt("SEARCH_BY", searchBy);
+        editor.apply();
+    }
+
+    /**
+     * load preferences when enter the activity
+     */
+    private void LoadPreferences(){
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        query = sharedPreferences.getString("QUERY", "");
+        filterRiskAssessment = sharedPreferences.getInt("FILTER_RISK", 0);
+        filterDate = sharedPreferences.getInt("FILTER_DATE", 0);
+        customStartDate = sharedPreferences.getString("START_DATE", "");
+        customDueDate = sharedPreferences.getString("END_DATE", "");
+        searchBy = sharedPreferences.getInt("SEARCH_BY", 0);
+    }
+
+    /**
+     * check if back button is pressed to restore filter
+     */
+    private void LoadIsPressedBack(){
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        isBackPressed = sharedPreferences.getBoolean("IS_PRESSED_BACK", false);
+    }
+
+    /**
+     * save back pressed state
+     */
+    private void SaveIsPressedBack(){
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("IS_PRESSED_BACK", isBackPressed);
+        editor.apply();
+    }
+
+    /**
+     * save instance state when there are configuration changes
+     */
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString("QUERY", query);
+        savedInstanceState.putInt("FILTER_RISK", filterRiskAssessment);
+        savedInstanceState.putInt("FILTER_DATE", filterDate);
+        savedInstanceState.putString("START_DATE", customStartDate);
+        savedInstanceState.putString("END_DATE", customDueDate);
+        savedInstanceState.putInt("SEARCH_BY", searchBy);
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    /**
+     * override on back pressed function
+     */
+    @Override
+    public void onBackPressed() {
+        isBackPressed = true;
+        SavePreferences();
+        SaveIsPressedBack();
+        super.onBackPressed();
+    }
 }
 
