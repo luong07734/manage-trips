@@ -36,6 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="@string/date"
+            android:textColor="@color/black"
+            android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="@id/tv_filter_risk"
             app:layout_constraintTop_toBottomOf="@id/tv_filter_risk" />
 
@@ -66,9 +68,10 @@
             android:id="@+id/tv_filter_risk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="32dp"
             android:text="@string/risk_assessment"
+            android:textColor="@color/black"
+            android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -102,6 +105,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/from"
+            android:textColor="@color/black"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@id/tv_filter_risk"
             app:layout_constraintTop_toBottomOf="@id/cv_filter_search" />
 
@@ -142,6 +147,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="72dp"
             android:text="@string/to"
+            android:textColor="@color/black"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@id/tv_from_title"
             app:layout_constraintTop_toBottomOf="@id/tv_from_title" />
 

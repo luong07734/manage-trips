@@ -54,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
     RecyclerTouchListener touchListener;
     TextView tvDeleteAll;
     ImageView ivBackground;
+    ImageView ivNoData;
     TextView tvNoTrip;
+    TextView tvNoData;
+    TextView tvNoDataSub;
     SearchView svSearch;
     ImageView btnFilter;
     TextView tvFilter;
@@ -88,11 +91,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+        // find view by id
+        rvTrip = findViewById(R.id.trip_list_rv);
+        btnAdd = findViewById(R.id.add_btn);
+        tvDeleteAll = findViewById(R.id.tv_delete_all);
+        ivBackground = findViewById(R.id.iv_background_image);
+        ivNoData = findViewById(R.id.iv_no_data_image);
+        tvNoTrip = findViewById(R.id.tv_no_trip);
+        tvNoData = findViewById(R.id.tv_no_data);
+        tvNoDataSub = findViewById(R.id.tv_no_data_sub);
+        svSearch = findViewById(R.id.sv_search);
+        btnFilter = findViewById(R.id.iv_search_picker);
+        tvFilter = findViewById(R.id.filter_add_btn);
 
         // restore value if re-entering activity after pressing back button
         LoadIsPressedBack();
         if (isBackPressed) {
             LoadPreferences();
+            svSearch.setQuery(query, false);
         }
         isBackPressed = false;
         SaveIsPressedBack();
@@ -106,25 +125,12 @@ public class MainActivity extends AppCompatActivity {
             customStartDate = savedInstanceState.getString("START_DATE");
             customDueDate = savedInstanceState.getString("END_DATE");
             searchBy = savedInstanceState.getInt("SEARCH_BY");
-
         }
 
-
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-        // find view by id
-        rvTrip = findViewById(R.id.trip_list_rv);
-        btnAdd = findViewById(R.id.add_btn);
-        tvDeleteAll = findViewById(R.id.tv_delete_all);
-        ivBackground = findViewById(R.id.iv_background_image);
-        tvNoTrip = findViewById(R.id.tv_no_trip);
-        svSearch = findViewById(R.id.sv_search);
-        btnFilter = findViewById(R.id.iv_search_picker);
-        tvFilter = findViewById(R.id.filter_add_btn);
 
         // recyclerView settings
         tripList = TripDao.getAll(this);
+        filteredTripList = TripDao.getAll(this);
         Collections.reverse(tripList);
         displaySuitableViewsWhenListIsEmptyAndViceVersa();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -482,10 +488,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         tripListAdapter.setFilteredList(filteredTripList);
-        if (filteredTripList.isEmpty()) {
-            // TODO: show empty
-            Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
-        }
+
+        displaySuitableViewsWhenListIsEmptyAndViceVersa();
+
     }
 
     /**
@@ -846,10 +851,19 @@ public class MainActivity extends AppCompatActivity {
         if (tripList.isEmpty()) {
             tvNoTrip.setVisibility(View.VISIBLE);
             ivBackground.setVisibility(View.VISIBLE);
-            tvDeleteAll.setVisibility(View.GONE);
+            tvDeleteAll.setVisibility(View.INVISIBLE);
         } else {
-            tvNoTrip.setVisibility(View.GONE);
-            ivBackground.setVisibility(View.GONE);
+            if (filteredTripList.isEmpty()) {
+                ivNoData.setVisibility(View.VISIBLE);
+                tvNoData.setVisibility(View.VISIBLE);
+                tvNoDataSub.setVisibility(View.VISIBLE);
+            } else {
+                ivNoData.setVisibility(View.INVISIBLE);
+                tvNoData.setVisibility(View.INVISIBLE);
+                tvNoDataSub.setVisibility(View.INVISIBLE);
+            }
+            tvNoTrip.setVisibility(View.INVISIBLE);
+            ivBackground.setVisibility(View.INVISIBLE);
             tvDeleteAll.setVisibility(View.VISIBLE);
         }
     }

@@ -9,7 +9,7 @@
     <string name="cancel">Cancel</string>
     <string name="update">Update</string>
     <string name="filter_for_search_results">FILTER FOR SEARCH RESULTS</string>
-    <string name="risk_assessment">RISK ASSESSMENT</string>
+    <string name="risk_assessment">Risk Assessment</string>
     <string name="from">From:</string>
     <string name="start_date">Start Date</string>
     <string name="to">To:</string>
@@ -34,6 +34,8 @@
     <string name="trips">Trips</string>
     <string name="add_filter">Add filter</string>
     <string name="no_trips_have_been_recorded_add_one">No trips have been recorded. Add one !</string>
+    <string name="no_data_found">No data found</string>
+    <string name="no_data_found_sub">Try searching another name and checking your filter</string>
     <string name="delete_all">Delete All</string>
     <string name="trip_info">Trip Info</string>
     <string name="trip_name">TRIP NAME</string>
