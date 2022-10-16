@@ -1,5 +1,21 @@
 package com.example.tripmanagement;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,14 +23,6 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import com.example.tripmanagement.adapter.TripListAdapter;
 import com.example.tripmanagement.dao.ExpenseDao;
@@ -24,23 +32,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
-
-import android.app.DatePickerDialog;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
@@ -79,9 +74,6 @@ public class MainActivity extends AppCompatActivity {
     String customDueDate = "";
     int searchBy = 0; // search by 0: trip name, 1: trip destination
 
-    boolean isBackPressed = false;
-    int scrollPosition = 0;
-
     /**
      * onCreate function
      */
@@ -107,15 +99,6 @@ public class MainActivity extends AppCompatActivity {
         btnFilter = findViewById(R.id.iv_search_picker);
         tvFilter = findViewById(R.id.filter_add_btn);
 
-        // restore value if re-entering activity after pressing back button
-        LoadIsPressedBack();
-        if (isBackPressed) {
-            LoadPreferences();
-            svSearch.setQuery(query, false);
-        }
-        isBackPressed = false;
-        SaveIsPressedBack();
-
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore value of members from saved state
@@ -139,9 +122,6 @@ public class MainActivity extends AppCompatActivity {
         rvTrip.setLayoutManager(linearLayoutManager);
 
         filterList(query);
-
-        // scroll to position
-        linearLayoutManager.scrollToPosition(scrollPosition);
 
         // add button onclick
         btnAdd.setOnClickListener(view -> showAddDialog());
@@ -869,54 +849,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * save preferences when press back
-     */
-    private void SavePreferences() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("QUERY", query);
-        editor.putInt("FILTER_RISK", filterRiskAssessment);
-        editor.putInt("FILTER_DATE", filterDate);
-        editor.putString("START_DATE", customStartDate);
-        editor.putString("END_DATE", customDueDate);
-        editor.putInt("SEARCH_BY", searchBy);
-        editor.putInt("SCROLL_POSITION", scrollPosition);
-        editor.apply();
-    }
-
-    /**
-     * load preferences when enter the activity
-     */
-    private void LoadPreferences() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        query = sharedPreferences.getString("QUERY", "");
-        filterRiskAssessment = sharedPreferences.getInt("FILTER_RISK", 0);
-        filterDate = sharedPreferences.getInt("FILTER_DATE", 0);
-        customStartDate = sharedPreferences.getString("START_DATE", "");
-        customDueDate = sharedPreferences.getString("END_DATE", "");
-        searchBy = sharedPreferences.getInt("SEARCH_BY", 0);
-        scrollPosition = sharedPreferences.getInt("SCROLL_POSITION", 0);
-    }
-
-    /**
-     * check if back button is pressed to restore filter
-     */
-    private void LoadIsPressedBack() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        isBackPressed = sharedPreferences.getBoolean("IS_PRESSED_BACK", false);
-    }
-
-    /**
-     * save back pressed state
-     */
-    private void SaveIsPressedBack() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("IS_PRESSED_BACK", isBackPressed);
-        editor.apply();
-    }
-
-    /**
      * save instance state when there are configuration changes
      */
     @Override
@@ -936,16 +868,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        isBackPressed = true;
-        // save scroll position
-        LinearLayoutManager myLayoutManager = (LinearLayoutManager) rvTrip.getLayoutManager();
-        if (myLayoutManager != null) {
-            scrollPosition = myLayoutManager.findFirstVisibleItemPosition();
-        }
-        SavePreferences();
-        SaveIsPressedBack();
-
-        super.onBackPressed();
+        this.moveTaskToBack(true);
     }
 }
 

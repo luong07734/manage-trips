@@ -85,7 +85,7 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     view.getContext());
             // Setting Dialog Title
             alertDialogDelete.setTitle(R.string.delete_the_expense);
-            alertDialogDelete.setMessage(R.string.confirm_datele_expense);
+            alertDialogDelete.setMessage(R.string.confirm_delete_expense);
             // Setting OK Button
             alertDialogDelete.setPositiveButton("YES",
                     (dialog, which) -> {
@@ -97,7 +97,7 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             notifyItemRemoved(viewHolder.getAdapterPosition());
 
                         } else {
-                            Toast.makeText(view.getContext(), "Delete failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(), context.getResources().getString(R.string.delete_expense_failed), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -205,7 +205,7 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         selectedExpense.setComment(Objects.requireNonNull(tietComment.getText()).toString());
 
                         if (ExpenseDao.update(view.getContext(), selectedExpense)) {
-                            Toast.makeText(view.getContext(), "Update expense successfully!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(), context.getResources().getString(R.string.update_expense_successfully), Toast.LENGTH_SHORT).show();
                             expenseList.clear();
                             expenseList.addAll(ExpenseDao.getExpenseList(view.getContext(), expense.getTripId()));
                             Collections.reverse(expenseList);
@@ -214,10 +214,10 @@ public class ExpenseListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                             dialog.cancel();
 
                         } else {
-                            Toast.makeText(view.getContext(), "Update expense failed!!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(), context.getResources().getString(R.string.update_expense_failed), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(view.getContext(), "Please fill all the required fields", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(), context.getResources().getString(R.string.fill_all_the_required_fields), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
